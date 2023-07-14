@@ -3,16 +3,22 @@ package com.pytka.taskifybackend.auth.services.impl;
 import com.pytka.taskifybackend.auth.tos.AuthResponse;
 import com.pytka.taskifybackend.auth.tos.AuthenticationRequest;
 import com.pytka.taskifybackend.auth.tos.RegisterRequest;
+import com.pytka.taskifybackend.config.security.JwtService;
+import com.pytka.taskifybackend.core.exceptions.auth.EmailAlreadyExistsException;
+import com.pytka.taskifybackend.core.exceptions.auth.TooWeakPasswordException;
 import com.pytka.taskifybackend.core.models.Role;
 import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
+import com.pytka.taskifybackend.core.utils.PasswordChecker;
 import lombok.RequiredArgsConstructor;
+import org.h2.engine.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.token.Token;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 @Transactional
@@ -25,23 +31,25 @@ public class AuthService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private final JwtService
+    @Autowired
+    private final JwtService jwtService;
+
+    @Autowired
+    private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request){
 
         String email = request.getEmail();
 
         if(this.userRepository.existsByEmail(email)){
-            // TODO: throw exception
-            return null;
+            throw new EmailAlreadyExistsException(email, new DataIntegrityViolationException(""));
         }
 
         String password = request.getPassword();
 
-//        if(PasswordChecker.isInValidPassword(password)){
-//            TODO: throw exception
-//        }
+        if(!PasswordChecker.isValidPassword(password)){
+            throw new TooWeakPasswordException();
+        }
 
         String encodedPassword = passwordEncoder.encode(password);
 
@@ -58,12 +66,30 @@ public class AuthService {
 
         // TODO: create user settings record after implementing logic
 
-//        String jwtToken = jwtSer
+        String jwtToken = jwtService.generateToken(userEntity);
 
-        return new AuthResponse();
+        return AuthResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     public AuthResponse login(AuthenticationRequest request){
-        return null;
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        UserEntity user = this.userRepository
+                                .findByEmail(request.getEmail())
+                                .orElseThrow();
+
+        String token = jwtService.generateToken(user);
+
+        return AuthResponse.builder()
+                .token(token)
+                .build();
     }
 }

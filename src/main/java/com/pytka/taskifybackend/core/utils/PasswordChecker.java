@@ -2,7 +2,7 @@ package com.pytka.taskifybackend.core.utils;
 
 public class PasswordChecker {
 
-    public static boolean checkPassword(String password){
+    public static boolean isValidPassword(String password){
 
         boolean containsLowercase = false;
         boolean containsUppercase = false;
