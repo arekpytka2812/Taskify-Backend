@@ -34,5 +34,5 @@ build/
 .vscode/
 
 ### properties
-
+rest.properties
 prod.properties
