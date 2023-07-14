@@ -26,13 +26,15 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "taskType")
+    private String taskType;
 
-    // TODO: user
+    @JoinColumn(name = "CR_USER", referencedColumnName = "ID")
+    @Column(name = "userID")
+    private Long userID;
 
     @Column(name = "priority")
-    private Priority priority;
+    private String priority;
 
     @OneToMany
     @JoinTable(name = "UPDATE_INFO")
