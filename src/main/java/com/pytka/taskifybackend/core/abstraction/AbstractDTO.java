@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @AllArgsConstructor
-public class AbstractDTO {
+public abstract class AbstractDTO {
 
 }
