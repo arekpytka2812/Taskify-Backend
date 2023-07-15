@@ -6,13 +6,17 @@ import com.pytka.taskifybackend.auth.tos.RegisterRequest;
 import com.pytka.taskifybackend.config.security.JwtService;
 import com.pytka.taskifybackend.core.exceptions.auth.EmailAlreadyExistsException;
 import com.pytka.taskifybackend.core.exceptions.auth.TooWeakPasswordException;
+import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.core.models.Role;
+import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
 import com.pytka.taskifybackend.core.utils.PasswordChecker;
 import lombok.RequiredArgsConstructor;
 import org.h2.engine.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,10 +63,15 @@ public class AuthService {
                 .email(email)
                 .username(request.getUsername())
                 .password(encodedPassword)
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
 
-        this.userRepository.save(userEntity);
+        try{
+            this.userRepository.save(userEntity);
+        }
+        catch (DataAccessException e) {
+            throw new DataCouldNotBeSavedException(UserEntity.class, userEntity.getEmail(), e);
+        }
 
         // TODO: create user settings record after implementing logic
 
