@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -26,4 +27,8 @@ public class TaskDTO extends AbstractDTO {
     private String priority;
 
     private List<UpdateInfoDTO> taskUpdates;
+
+    private LocalDateTime createDate;
+
+    private LocalDateTime expirationDate;
 }

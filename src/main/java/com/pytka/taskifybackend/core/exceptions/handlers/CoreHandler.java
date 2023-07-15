@@ -1,6 +1,7 @@
 package com.pytka.taskifybackend.core.exceptions.handlers;
 
 import com.pytka.taskifybackend.core.exceptions.ApiError;
+import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeDeletedException;
 import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
@@ -36,6 +37,19 @@ public class CoreHandler {
                 request.getRequestURI(),
                 e.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.statusCode()));
+    }
+
+    @ExceptionHandler(DataCouldNotBeDeletedException.class)
+    public ResponseEntity<ApiError> handleDataCouldNotBeDeletedException(Exception e, HttpServletRequest request){
+
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                e.getMessage(),
+                HttpStatus.CONFLICT.value(),
                 LocalDateTime.now()
         );
 

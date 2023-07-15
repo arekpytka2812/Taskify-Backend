@@ -1,6 +1,7 @@
 package com.pytka.taskifybackend.core.abstraction;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -12,8 +13,8 @@ import java.time.LocalDateTime;
 
 @Data
 @MappedSuperclass
-@NoArgsConstructor
 @SuperBuilder
+@NoArgsConstructor
 public abstract class AbstractEntity {
 
     @Id
@@ -21,6 +22,8 @@ public abstract class AbstractEntity {
     private Long ID;
 
     @CreatedDate
+    @Column(nullable = false, updatable = false)
+    @Builder.Default
     private LocalDateTime createDate = LocalDateTime.now();
 
     @LastModifiedDate

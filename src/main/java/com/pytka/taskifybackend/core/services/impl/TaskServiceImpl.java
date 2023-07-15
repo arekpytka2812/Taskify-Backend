@@ -2,6 +2,7 @@ package com.pytka.taskifybackend.core.services.impl;
 
 import com.pytka.taskifybackend.core.DTOs.TaskDTO;
 import com.pytka.taskifybackend.core.DTOs.UpdateInfoDTO;
+import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeDeletedException;
 import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
@@ -9,23 +10,15 @@ import com.pytka.taskifybackend.core.mappers.TaskMapper;
 import com.pytka.taskifybackend.core.mappers.UpdateInfoMapper;
 import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UpdateInfoEntity;
-import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.repositories.TaskRepository;
 import com.pytka.taskifybackend.core.repositories.UpdateInfoRepository;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
 import com.pytka.taskifybackend.core.services.TaskService;
-import lombok.AllArgsConstructor;
-import org.h2.engine.User;
-import org.hibernate.TransientObjectException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -36,22 +29,22 @@ public class TaskServiceImpl implements TaskService {
 
     private final UserRepository userRepository;
 
-    private final UpdateInfoRepository updateInfoRepository;
-
     private final TaskMapper taskMapper;
     private final UpdateInfoMapper updateInfoMapper;
 
+    private final UpdateInfoRepository updateInfoRepository;
+
     public TaskServiceImpl(TaskRepository taskRepository,
                            UserRepository userRepository,
-                           UpdateInfoRepository updateInfoRepository,
                            TaskMapper taskMapper,
-                           UpdateInfoMapper updateInfoMapper
+                           UpdateInfoMapper updateInfoMapper,
+                           UpdateInfoRepository updateInfoRepository
     ) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-        this.updateInfoRepository = updateInfoRepository;
         this.taskMapper = taskMapper;
         this.updateInfoMapper = updateInfoMapper;
+        this.updateInfoRepository = updateInfoRepository;
     }
 
     @Override
@@ -67,6 +60,41 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public boolean updateTask(long taskID, TaskDTO taskDTO){
+
+        TaskEntity task = this.taskRepository.findById(taskID)
+                .orElseThrow(() ->
+                        new DataNotFoundException(TaskEntity.class, taskID)
+                );
+
+        task.setName(taskDTO.getName());
+        task.setDescription(taskDTO.getDescription());
+        task.setTaskType(taskDTO.getTaskType());
+        task.setPriority(taskDTO.getPriority());
+
+        try{
+            this.taskRepository.save(task);
+        }
+        catch (DataAccessException e) {
+            throw new DataCouldNotBeSavedException(TaskEntity.class, task.getName(), e);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean deleteTask(long taskID){
+
+        TaskEntity task = this.taskRepository.findById(taskID)
+                .orElseThrow(() ->
+                        new DataNotFoundException(TaskEntity.class, taskID)
+                );
+
+        try{
+            this.taskRepository.delete(task);
+        }
+        catch (DataAccessException e){
+            throw new DataCouldNotBeDeletedException(TaskEntity.class, taskID);
+        }
 
         return true;
     }
