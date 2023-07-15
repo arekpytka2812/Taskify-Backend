@@ -3,6 +3,7 @@ package com.pytka.taskifybackend.auth.controllers;
 import com.pytka.taskifybackend.auth.tos.AuthResponse;
 import com.pytka.taskifybackend.auth.services.impl.AuthService;
 import com.pytka.taskifybackend.auth.tos.AuthenticationRequest;
+import com.pytka.taskifybackend.auth.tos.ChangePasswordRequest;
 import com.pytka.taskifybackend.auth.tos.RegisterRequest;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,12 @@ public class AuthController {
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(this.authService.login(request));
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<AuthResponse> changePassword(
+            @RequestBody ChangePasswordRequest request
+    ) {
+        return ResponseEntity.ok(this.authService.changePassword(request));
     }
 }
