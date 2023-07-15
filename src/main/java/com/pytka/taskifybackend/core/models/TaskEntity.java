@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class TaskEntity extends AbstractEntity {
     @JoinColumn(name = "UPDATE_INFO", referencedColumnName = "ID")
     @Column(name = "taskUpdates")
     private List<UpdateInfoEntity> taskUpdates;
+
+    @Column(name = "expirationDate", nullable = true)
+    private LocalDateTime expirationDate;
 
 }
 

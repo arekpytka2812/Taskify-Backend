@@ -15,6 +15,8 @@ public interface TaskService {
 
     boolean updateTask(long taskID, TaskDTO taskDTO);
 
+    boolean deleteTask(long taskID);
+
     boolean addTask(long userID, TaskDTO taskDTO);
 
     boolean addTaskUpdate(long taskID, UpdateInfoDTO updateInfoDTO);

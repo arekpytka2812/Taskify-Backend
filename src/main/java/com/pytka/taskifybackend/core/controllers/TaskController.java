@@ -25,8 +25,6 @@ public class TaskController {
         return ResponseEntity.ok(this.taskService.getTasksByUserID(userID));
     }
 
-    //TODO: get task by id
-
     @PostMapping("/update/{taskID}")
     @RolesAllowed("USER")
     public ResponseEntity<Boolean> updateTask(
@@ -36,8 +34,13 @@ public class TaskController {
         return ResponseEntity.ok(this.taskService.updateTask(taskID, taskDTO));
     }
 
-
-    //TODO: delete task
+    @DeleteMapping("/delete/{taskID}")
+    @RolesAllowed("USER")
+    public ResponseEntity<Boolean> deleteTask(
+            @PathVariable("taskID") long taskID
+    ) {
+        return ResponseEntity.ok(this.taskService.deleteTask(taskID));
+    }
 
     @PostMapping("/add/{userID}")
     @RolesAllowed("USER")
@@ -50,7 +53,7 @@ public class TaskController {
 
     @PostMapping("/updateInfo/{taskID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> addTask(
+    public ResponseEntity<Boolean> addTaskUpdate(
             @RequestBody UpdateInfoDTO updateInfoDTO,
             @PathVariable("taskID") long taskID
     ){
