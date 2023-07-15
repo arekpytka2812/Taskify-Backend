@@ -1,9 +1,7 @@
 package com.pytka.taskifybackend.core.models;
 
 import com.pytka.taskifybackend.core.abstraction.AbstractEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,9 +19,10 @@ import java.time.LocalDateTime;
 @Table(name = "UPDATE_INFO")
 public class UpdateInfoEntity extends AbstractEntity {
 
-    @Column(name = "updateDate")
-    private LocalDateTime updateDate;
+    @Column(name = "updateInfoDate")
+    private LocalDateTime updateInfoDate;
 
     @Column(name = "description")
     private String description;
+
 }

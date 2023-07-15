@@ -25,5 +25,5 @@ public class TaskDTO extends AbstractDTO {
 
     private String priority;
 
-    private List<UpdateInfoEntity> taskUpdates;
+    private List<UpdateInfoDTO> taskUpdates;
 }

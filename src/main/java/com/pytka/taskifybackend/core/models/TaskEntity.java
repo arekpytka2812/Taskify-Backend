@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,8 +37,8 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "priority")
     private String priority;
 
-    @OneToMany
-    @JoinTable(name = "UPDATE_INFO")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "UPDATE_INFO", referencedColumnName = "ID")
     @Column(name = "taskUpdates")
     private List<UpdateInfoEntity> taskUpdates;
 

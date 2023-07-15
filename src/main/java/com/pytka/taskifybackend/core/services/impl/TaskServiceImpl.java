@@ -6,14 +6,17 @@ import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedExceptio
 import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
 import com.pytka.taskifybackend.core.mappers.TaskMapper;
+import com.pytka.taskifybackend.core.mappers.UpdateInfoMapper;
 import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UpdateInfoEntity;
 import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.repositories.TaskRepository;
+import com.pytka.taskifybackend.core.repositories.UpdateInfoRepository;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
 import com.pytka.taskifybackend.core.services.TaskService;
 import lombok.AllArgsConstructor;
 import org.h2.engine.User;
+import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -33,15 +36,22 @@ public class TaskServiceImpl implements TaskService {
 
     private final UserRepository userRepository;
 
+    private final UpdateInfoRepository updateInfoRepository;
+
     private final TaskMapper taskMapper;
+    private final UpdateInfoMapper updateInfoMapper;
 
     public TaskServiceImpl(TaskRepository taskRepository,
                            UserRepository userRepository,
-                           TaskMapper taskMapper
+                           UpdateInfoRepository updateInfoRepository,
+                           TaskMapper taskMapper,
+                           UpdateInfoMapper updateInfoMapper
     ) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.updateInfoRepository = updateInfoRepository;
         this.taskMapper = taskMapper;
+        this.updateInfoMapper = updateInfoMapper;
     }
 
     @Override
@@ -69,13 +79,16 @@ public class TaskServiceImpl implements TaskService {
             throw new UserNotFoundException(userID);
         }
 
+        List<UpdateInfoEntity> updateInfoEntities = this.updateInfoMapper
+                .mapToEntityList(taskDTO.getTaskUpdates());
+
         TaskEntity task = TaskEntity.builder()
                 .name(taskDTO.getName())
                 .description(taskDTO.getDescription())
                 .taskType(taskDTO.getTaskType())
                 .userID(userID)
                 .priority(taskDTO.getPriority())
-                .taskUpdates(taskDTO.getTaskUpdates())
+                .taskUpdates(updateInfoEntities)
                 .build();
 
         try{
@@ -94,19 +107,26 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity task = this.taskRepository.findById(taskID)
                 .orElseThrow(() ->
-                        new DataNotFoundException(taskID)
+                        new DataNotFoundException(TaskEntity.class, taskID)
                 );
 
         UpdateInfoEntity updateInfo = UpdateInfoEntity.builder()
                 .description(updateInfoDTO.getDescription())
-                .updateDate(updateInfoDTO.getUpdateDate())
+                .updateInfoDate(updateInfoDTO.getUpdateInfoDate())
                 .build();
+
+        try{
+            this.updateInfoRepository.save(updateInfo);
+        }
+        catch (DataAccessException e){
+            throw new DataCouldNotBeSavedException(UpdateInfoEntity.class, e);
+        }
 
         try{
             this.taskRepository.appendUpdateInfo(task, updateInfo);
         }
         catch (DataAccessException e){
-            throw new DataCouldNotBeSavedException(UpdateInfoEntity.class, e);
+            throw new DataCouldNotBeSavedException(TaskEntity.class, e);
         }
 
         return true;

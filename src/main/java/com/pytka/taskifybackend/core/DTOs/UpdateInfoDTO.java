@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 public class UpdateInfoDTO extends AbstractDTO {
 
-    private LocalDateTime updateDate;
+    private LocalDateTime updateInfoDate;
 
     private String description;
 }
