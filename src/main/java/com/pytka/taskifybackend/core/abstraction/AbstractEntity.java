@@ -1,5 +1,6 @@
 package com.pytka.taskifybackend.core.abstraction;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -24,9 +25,11 @@ public abstract class AbstractEntity {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Builder.Default
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createDate = LocalDateTime.now();
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updateDate;
 
     @Version
