@@ -58,8 +58,10 @@ public class TaskServiceImpl implements TaskService {
                 .mapToDTOList(this.taskRepository.findAllByUserID(userID));
     }
 
+    //TODO; delete taskID, now taskID comes in taskDTO
+
     @Override
-    public boolean updateTask(long taskID, TaskDTO taskDTO){
+    public boolean updateTask(Long taskID, TaskDTO taskDTO){
 
         TaskEntity task = this.taskRepository.findById(taskID)
                 .orElseThrow(() ->
@@ -107,8 +109,6 @@ public class TaskServiceImpl implements TaskService {
             throw new UserNotFoundException(userID);
         }
 
-        List<UpdateInfoEntity> updateInfoEntities = this.updateInfoMapper
-                .mapToEntityList(taskDTO.getTaskUpdates());
 
         TaskEntity task = TaskEntity.builder()
                 .name(taskDTO.getName())
@@ -116,7 +116,6 @@ public class TaskServiceImpl implements TaskService {
                 .taskType(taskDTO.getTaskType())
                 .userID(userID)
                 .priority(taskDTO.getPriority())
-                .taskUpdates(updateInfoEntities)
                 .build();
 
         try{
