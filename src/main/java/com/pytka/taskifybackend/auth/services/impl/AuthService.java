@@ -5,6 +5,7 @@ import com.pytka.taskifybackend.auth.tos.AuthenticationRequest;
 import com.pytka.taskifybackend.auth.tos.ChangePasswordRequest;
 import com.pytka.taskifybackend.auth.tos.RegisterRequest;
 import com.pytka.taskifybackend.config.security.JwtService;
+import com.pytka.taskifybackend.core.DTOs.WorkspaceDTO;
 import com.pytka.taskifybackend.core.exceptions.auth.EmailAlreadyExistsException;
 import com.pytka.taskifybackend.core.exceptions.auth.TooWeakPasswordException;
 import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
@@ -12,7 +13,11 @@ import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
 import com.pytka.taskifybackend.core.models.Role;
 import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UserEntity;
+import com.pytka.taskifybackend.core.models.UserSettingsEntity;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
+import com.pytka.taskifybackend.core.repositories.UserSettingsRepository;
+import com.pytka.taskifybackend.core.services.UserSettingsService;
+import com.pytka.taskifybackend.core.services.WorkspaceService;
 import com.pytka.taskifybackend.core.utils.PasswordChecker;
 import lombok.RequiredArgsConstructor;
 import org.h2.engine.User;
@@ -39,6 +44,10 @@ public class AuthService {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+
+    private final UserSettingsService userSettingsService;
+
+    private final WorkspaceService workspaceService;
 
     public AuthResponse register(RegisterRequest request){
 
@@ -72,11 +81,16 @@ public class AuthService {
             throw new DataCouldNotBeSavedException(UserEntity.class, userEntity.getEmail(), e);
         }
 
-        // TODO: create user settings record after implementing logic
+        this.userSettingsService.createUserSettingsRecordByUser(userEntity.getID());
+        this.workspaceService.addWorkspace(userEntity.getID());
 
         String jwtToken = jwtService.generateToken(userEntity);
 
+        userEntity = this.userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
         return AuthResponse.builder()
+                .ID(userEntity.getID())
                 .token(jwtToken)
                 .build();
     }
@@ -90,13 +104,13 @@ public class AuthService {
                 )
         );
 
-        UserEntity user = this.userRepository
-                                .findByEmail(request.getEmail())
-                                .orElseThrow();
+        UserEntity user = this.userRepository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
 
         String token = jwtService.generateToken(user);
 
         return AuthResponse.builder()
+                .ID(user.getID())
                 .token(token)
                 .build();
     }

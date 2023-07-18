@@ -2,12 +2,14 @@ package com.pytka.taskifybackend.core.controllers;
 
 import com.pytka.taskifybackend.core.DTOs.TaskDTO;
 import com.pytka.taskifybackend.core.DTOs.UpdateInfoDTO;
+import com.pytka.taskifybackend.core.DTOs.WorkspaceDTO;
 import com.pytka.taskifybackend.core.services.TaskService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -17,19 +19,11 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/{userID}")
-    @RolesAllowed("USER")
-    public ResponseEntity<List<TaskDTO>> getTasksByUserID(
-            @PathVariable("userID") long userID
-    ) {
-        return ResponseEntity.ok(this.taskService.getTasksByUserID(userID));
-    }
-
     @PostMapping("/update/{taskID}")
     @RolesAllowed("USER")
     public ResponseEntity<Boolean> updateTask(
-            @RequestBody TaskDTO taskDTO,
-            @PathVariable("taskID") long taskID
+            @PathVariable("taskID") Long taskID,
+            @RequestBody TaskDTO taskDTO
     ) {
         return ResponseEntity.ok(this.taskService.updateTask(taskID, taskDTO));
     }
@@ -45,8 +39,8 @@ public class TaskController {
     @PostMapping("/add/{userID}")
     @RolesAllowed("USER")
     public ResponseEntity<Boolean> addTask(
-            @RequestBody TaskDTO taskDTO,
-            @PathVariable("userID") long userID
+            @PathVariable("userID") long userID,
+            @RequestBody TaskDTO taskDTO
     ){
         return ResponseEntity.ok(this.taskService.addTask(userID, taskDTO));
     }
@@ -54,8 +48,8 @@ public class TaskController {
     @PostMapping("/updateInfo/{taskID}")
     @RolesAllowed("USER")
     public ResponseEntity<Boolean> addTaskUpdate(
-            @RequestBody UpdateInfoDTO updateInfoDTO,
-            @PathVariable("taskID") long taskID
+            @PathVariable("taskID") long taskID,
+            @RequestBody UpdateInfoDTO updateInfoDTO
     ){
         return ResponseEntity.ok(this.taskService.addTaskUpdate(taskID, updateInfoDTO));
     }

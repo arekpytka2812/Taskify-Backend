@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,21 +14,10 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-public class TaskDTO extends AbstractDTO {
+public class WorkspaceDTO extends AbstractDTO {
 
     private String name;
 
-    private String description;
+    private List<TaskDTO> tasks;
 
-    private String taskType;
-
-    private String priority;
-
-    private Long workspaceID;
-
-    private List<UpdateInfoDTO> taskUpdates;
-
-    private LocalDateTime createDate;
-
-    private LocalDateTime expirationDate;
 }
