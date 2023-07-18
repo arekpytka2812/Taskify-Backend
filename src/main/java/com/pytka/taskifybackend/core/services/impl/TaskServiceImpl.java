@@ -10,10 +10,13 @@ import com.pytka.taskifybackend.core.mappers.TaskMapper;
 import com.pytka.taskifybackend.core.mappers.UpdateInfoMapper;
 import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UpdateInfoEntity;
+import com.pytka.taskifybackend.core.models.WorkspaceEntity;
 import com.pytka.taskifybackend.core.repositories.TaskRepository;
 import com.pytka.taskifybackend.core.repositories.UpdateInfoRepository;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
+import com.pytka.taskifybackend.core.repositories.WorkspaceRepository;
 import com.pytka.taskifybackend.core.services.TaskService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
@@ -30,33 +34,12 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
 
     private final TaskMapper taskMapper;
+
     private final UpdateInfoMapper updateInfoMapper;
 
+    private final WorkspaceRepository workspaceRepository;
+
     private final UpdateInfoRepository updateInfoRepository;
-
-    public TaskServiceImpl(TaskRepository taskRepository,
-                           UserRepository userRepository,
-                           TaskMapper taskMapper,
-                           UpdateInfoMapper updateInfoMapper,
-                           UpdateInfoRepository updateInfoRepository
-    ) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
-        this.taskMapper = taskMapper;
-        this.updateInfoMapper = updateInfoMapper;
-        this.updateInfoRepository = updateInfoRepository;
-    }
-
-    @Override
-    public List<TaskDTO> getTasksByUserID(long userID) {
-
-        if(!this.userRepository.existsById(userID)){
-            throw new UserNotFoundException(userID);
-        }
-
-        return this.taskMapper
-                .mapToDTOList(this.taskRepository.findAllByUserID(userID));
-    }
 
     //TODO; delete taskID, now taskID comes in taskDTO
 
@@ -109,13 +92,17 @@ public class TaskServiceImpl implements TaskService {
             throw new UserNotFoundException(userID);
         }
 
+        WorkspaceEntity workspaceEntity = this.workspaceRepository.findById(taskDTO.getWorkspaceID())
+                .orElseThrow(() ->
+                        new DataNotFoundException(WorkspaceEntity.class, taskDTO.getWorkspaceID())
+                );
 
         TaskEntity task = TaskEntity.builder()
                 .name(taskDTO.getName())
                 .description(taskDTO.getDescription())
                 .taskType(taskDTO.getTaskType())
-                .userID(userID)
                 .priority(taskDTO.getPriority())
+                .workspaceID(taskDTO.getWorkspaceID())
                 .build();
 
         try{
@@ -123,6 +110,13 @@ public class TaskServiceImpl implements TaskService {
         }
         catch (DataAccessException e) {
             throw new DataCouldNotBeSavedException(TaskEntity.class, task.getName(), e);
+        }
+
+        try{
+            this.workspaceRepository.appendTask(workspaceEntity, task);
+        }
+        catch (DataAccessException e){
+            throw new DataCouldNotBeSavedException(WorkspaceEntity.class, workspaceEntity.getName(), e);
         }
 
         return true;

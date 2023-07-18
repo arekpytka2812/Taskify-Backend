@@ -30,12 +30,12 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "taskType")
     private String taskType;
 
-    @JoinColumn(name = "CR_USER", referencedColumnName = "ID")
-    @Column(name = "userID")
-    private Long userID;
-
     @Column(name = "priority")
     private String priority;
+
+    @JoinColumn(name = "WORKSPACES", referencedColumnName = "ID")
+    @Column(name = "workspaceID", nullable = false)
+    private Long workspaceID;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "UPDATE_INFO", referencedColumnName = "ID")

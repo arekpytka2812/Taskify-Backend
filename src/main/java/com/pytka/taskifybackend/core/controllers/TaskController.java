@@ -2,6 +2,7 @@ package com.pytka.taskifybackend.core.controllers;
 
 import com.pytka.taskifybackend.core.DTOs.TaskDTO;
 import com.pytka.taskifybackend.core.DTOs.UpdateInfoDTO;
+import com.pytka.taskifybackend.core.DTOs.WorkspaceDTO;
 import com.pytka.taskifybackend.core.services.TaskService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,6 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-
-    @GetMapping("/{userID}")
-    @RolesAllowed("USER")
-    public ResponseEntity<List<TaskDTO>> getTasksByUserID(
-            @PathVariable("userID") long userID
-    ) {
-        return ResponseEntity.ok(this.taskService.getTasksByUserID(userID));
-    }
 
     @PostMapping("/update/{taskID}")
     @RolesAllowed("USER")

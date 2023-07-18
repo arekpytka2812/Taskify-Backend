@@ -25,6 +25,8 @@ public class TaskDTO extends AbstractDTO {
 
     private String priority;
 
+    private Long workspaceID;
+
     private List<UpdateInfoDTO> taskUpdates;
 
     private LocalDateTime createDate;
