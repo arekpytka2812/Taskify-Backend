@@ -86,7 +86,11 @@ public class AuthService {
 
         String jwtToken = jwtService.generateToken(userEntity);
 
+        userEntity = this.userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
         return AuthResponse.builder()
+                .ID(userEntity.getID())
                 .token(jwtToken)
                 .build();
     }
@@ -100,13 +104,13 @@ public class AuthService {
                 )
         );
 
-        UserEntity user = this.userRepository
-                                .findByEmail(request.getEmail())
-                                .orElseThrow();
+        UserEntity user = this.userRepository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
 
         String token = jwtService.generateToken(user);
 
         return AuthResponse.builder()
+                .ID(user.getID())
                 .token(token)
                 .build();
     }

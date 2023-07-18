@@ -7,5 +7,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AuthResponse {
 
+    private Long ID;
+
     private String token;
 }
