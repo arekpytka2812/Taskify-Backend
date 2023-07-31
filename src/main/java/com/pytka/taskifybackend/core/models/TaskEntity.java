@@ -33,6 +33,9 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "priority")
     private String priority;
 
+    @Column(name = "notifications")
+    private Boolean notifications = false;
+
     @JoinColumn(name = "WORKSPACES", referencedColumnName = "ID")
     @Column(name = "workspaceID", nullable = false)
     private Long workspaceID;
@@ -42,7 +45,7 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "taskUpdates")
     private List<UpdateInfoEntity> taskUpdates;
 
-    @Column(name = "expirationDate", nullable = true)
+    @Column(name = "expirationDate")
     private LocalDateTime expirationDate;
 
 }
