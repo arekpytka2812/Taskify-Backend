@@ -8,10 +8,13 @@ import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
 import com.pytka.taskifybackend.core.mappers.WorkspaceLiteMapper;
 import com.pytka.taskifybackend.core.mappers.WorkspaceMapper;
+import com.pytka.taskifybackend.core.models.StatsEntity;
 import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.models.WorkspaceEntity;
+import com.pytka.taskifybackend.core.repositories.StatsRepository;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
 import com.pytka.taskifybackend.core.repositories.WorkspaceRepository;
+import com.pytka.taskifybackend.core.services.StatsService;
 import com.pytka.taskifybackend.core.services.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -32,6 +35,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceMapper workspaceMapper;
 
     private final WorkspaceLiteMapper workspaceLiteMapper;
+
+    private final StatsRepository statsRepository;
 
 
     @Override
@@ -86,6 +91,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         catch (DataAccessException e){
             throw new DataCouldNotBeSavedException(WorkspaceEntity.class, workspaceDTO.getName(), e);
+        }
+
+        StatsEntity stats = this.statsRepository.getUserStats(userID)
+                .orElseThrow(
+                        () -> new DataNotFoundException(StatsEntity.class, userID)
+                );
+
+        stats.setWorkspacesCreated(stats.getWorkspacesCreated() + 1);
+
+        try{
+            this.statsRepository.save(stats);
+        }
+        catch (DataAccessException e){
+            throw new DataCouldNotBeSavedException(StatsEntity.class, e);
         }
 
         return true;
