@@ -95,9 +95,9 @@ public class AuthService {
     }
 
     private void createRecordsWhileRegistering(Long userID){
+        this.statsService.addUserStats(userID);
         this.userSettingsService.createUserSettingsRecordByUser(userID);
         this.workspaceService.addWorkspace(userID);
-        this.statsService.addUserStats(userID);
     }
 
     public AuthResponse login(AuthenticationRequest request){

@@ -38,7 +38,7 @@ public class StatsServiceImpl implements StatsService {
 
         StatsEntity stats = StatsEntity.builder()
                 .userID(userID)
-                .workspacesCreated(1L)
+                .workspacesCreated(0L)
                 .tasksCreated(0L)
                 .updateInfosCreated(0L)
                 .build();
