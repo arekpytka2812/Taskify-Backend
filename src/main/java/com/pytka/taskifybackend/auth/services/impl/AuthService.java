@@ -97,15 +97,15 @@ public class AuthService {
 
     public AuthResponse login(AuthenticationRequest request){
 
+        UserEntity user = this.userRepository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-
-        UserEntity user = this.userRepository.findByEmail(request.getEmail())
-                .orElseThrow(UserNotFoundException::new);
 
         String token = jwtService.generateToken(user);
 

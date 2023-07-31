@@ -6,6 +6,7 @@ import com.pytka.taskifybackend.core.DTOs.WorkspaceDTO;
 import com.pytka.taskifybackend.core.services.TaskService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,14 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+
+    @GetMapping("/get/{workspaceID}")
+    @RolesAllowed("USER")
+    public ResponseEntity<List<TaskDTO>> getTasksByWorkspaceID(
+            @PathVariable("workspaceID") Long workspaceID
+    ) {
+        return ResponseEntity.ok(this.taskService.getTasksByWorkspaceID(workspaceID));
+    }
 
     @PostMapping("/update/{taskID}")
     @RolesAllowed("USER")

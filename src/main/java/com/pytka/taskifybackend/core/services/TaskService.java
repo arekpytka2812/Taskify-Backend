@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface TaskService {
 
+    List<TaskDTO> getTasksByWorkspaceID(Long workspaceID);
+
     boolean updateTask(Long taskID, TaskDTO taskDTO);
 
     boolean deleteTask(long taskID);

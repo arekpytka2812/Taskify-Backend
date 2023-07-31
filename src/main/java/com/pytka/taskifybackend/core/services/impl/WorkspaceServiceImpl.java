@@ -1,10 +1,12 @@
 package com.pytka.taskifybackend.core.services.impl;
 
 import com.pytka.taskifybackend.core.DTOs.WorkspaceDTO;
+import com.pytka.taskifybackend.core.DTOs.WorkspaceLiteDTO;
 import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeDeletedException;
 import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
+import com.pytka.taskifybackend.core.mappers.WorkspaceLiteMapper;
 import com.pytka.taskifybackend.core.mappers.WorkspaceMapper;
 import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.models.WorkspaceEntity;
@@ -29,6 +31,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceMapper workspaceMapper;
 
+    private final WorkspaceLiteMapper workspaceLiteMapper;
+
 
     @Override
     public List<WorkspaceDTO> getWorkspacesByUserID(Long userID) {
@@ -38,6 +42,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
 
         return this.workspaceMapper
+                .mapToDTOList(
+                        this.workspaceRepository.findAllByUserID(userID)
+                );
+    }
+
+    @Override
+    public List<WorkspaceLiteDTO> getWorkspacesLiteByUserID(Long userID){
+        if(!this.userRepository.existsById(userID)){
+            throw new UserNotFoundException(userID);
+        }
+
+        return this.workspaceLiteMapper
                 .mapToDTOList(
                         this.workspaceRepository.findAllByUserID(userID)
                 );
