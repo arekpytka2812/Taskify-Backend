@@ -1,9 +1,9 @@
-package com.pytka.taskifybackend.core.exceptions.handlers;
+package com.pytka.taskifybackend.exceptions.handlers;
 
-import com.pytka.taskifybackend.core.exceptions.ApiError;
-import com.pytka.taskifybackend.core.exceptions.auth.EmailAlreadyExistsException;
-import com.pytka.taskifybackend.core.exceptions.auth.TooWeakPasswordException;
-import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
+import com.pytka.taskifybackend.exceptions.ApiError;
+import com.pytka.taskifybackend.exceptions.auth.EmailAlreadyExistsException;
+import com.pytka.taskifybackend.exceptions.auth.TooWeakPasswordException;
+import com.pytka.taskifybackend.exceptions.core.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

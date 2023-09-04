@@ -1,8 +1,8 @@
 package com.pytka.taskifybackend.core.services.impl;
 
 import com.pytka.taskifybackend.core.DTOs.StatsDTO;
-import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
-import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
+import com.pytka.taskifybackend.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.mappers.StatsMapper;
 import com.pytka.taskifybackend.core.models.StatsEntity;
 import com.pytka.taskifybackend.core.repositories.StatsRepository;
@@ -10,8 +10,6 @@ import com.pytka.taskifybackend.core.services.StatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

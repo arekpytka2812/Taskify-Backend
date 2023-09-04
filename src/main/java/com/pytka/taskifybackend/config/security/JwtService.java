@@ -1,7 +1,6 @@
 package com.pytka.taskifybackend.config.security;
 
-import com.pytka.taskifybackend.auth.tos.AuthenticationRequest;
-import com.pytka.taskifybackend.core.models.UserEntity;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,10 +1,9 @@
-package com.pytka.taskifybackend.core.exceptions.handlers;
+package com.pytka.taskifybackend.exceptions.handlers;
 
-import com.pytka.taskifybackend.core.exceptions.ApiError;
-import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeDeletedException;
-import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
-import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
-import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
+import com.pytka.taskifybackend.exceptions.ApiError;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeDeletedException;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
+import com.pytka.taskifybackend.exceptions.core.DataNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
