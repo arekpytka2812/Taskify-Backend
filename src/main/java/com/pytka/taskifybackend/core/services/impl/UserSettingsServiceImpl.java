@@ -14,6 +14,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
     private final UserSettingsRepository userSettingsRepository;
 
+    @Override
     public void createUserSettingsRecordByUser(Long userID){
 
         UserSettingsEntity userSettings = UserSettingsEntity.builder()

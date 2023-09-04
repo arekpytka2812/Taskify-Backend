@@ -8,13 +8,11 @@ import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
 import com.pytka.taskifybackend.core.mappers.TaskMapper;
 import com.pytka.taskifybackend.core.mappers.UpdateInfoMapper;
+import com.pytka.taskifybackend.core.models.StatsEntity;
 import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UpdateInfoEntity;
 import com.pytka.taskifybackend.core.models.WorkspaceEntity;
-import com.pytka.taskifybackend.core.repositories.TaskRepository;
-import com.pytka.taskifybackend.core.repositories.UpdateInfoRepository;
-import com.pytka.taskifybackend.core.repositories.UserRepository;
-import com.pytka.taskifybackend.core.repositories.WorkspaceRepository;
+import com.pytka.taskifybackend.core.repositories.*;
 import com.pytka.taskifybackend.core.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -31,17 +29,15 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
 
-    private final UserRepository userRepository;
-
     private final TaskMapper taskMapper;
 
-    private final UpdateInfoMapper updateInfoMapper;
-
-    private final WorkspaceRepository workspaceRepository;
+    private final UserRepository userRepository;
 
     private final UpdateInfoRepository updateInfoRepository;
 
-    //TODO; delete taskID, now taskID comes in taskDTO
+    private final WorkspaceRepository workspaceRepository;
+
+    private final StatsRepository statsRepository;
 
     @Override
     public List<TaskDTO> getTasksByWorkspaceID(Long workspaceID){
@@ -54,6 +50,17 @@ public class TaskServiceImpl implements TaskService {
                 this.taskRepository.getTasksByWorkspaceID(workspaceID)
         );
 
+    }
+
+    @Override
+    public TaskDTO getTaskByID(Long taskID){
+
+        TaskEntity task = this.taskRepository.findById(taskID)
+                .orElseThrow(() ->
+                        new DataNotFoundException(TaskEntity.class, taskID)
+                );
+
+        return taskMapper.mapToDTO(task);
     }
 
     @Override
@@ -130,6 +137,20 @@ public class TaskServiceImpl implements TaskService {
         }
         catch (DataAccessException e){
             throw new DataCouldNotBeSavedException(WorkspaceEntity.class, workspaceEntity.getName(), e);
+        }
+
+        StatsEntity stats = this.statsRepository.getUserStats(userID)
+                .orElseThrow(
+                        () -> new DataNotFoundException(StatsEntity.class, userID)
+                );
+
+        stats.setTasksCreated(stats.getTasksCreated() + 1);
+
+        try{
+            this.statsRepository.save(stats);
+        }
+        catch (DataAccessException e){
+            throw new DataCouldNotBeSavedException(StatsEntity.class, e);
         }
 
         return true;

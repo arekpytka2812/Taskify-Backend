@@ -16,6 +16,7 @@ import com.pytka.taskifybackend.core.models.UserEntity;
 import com.pytka.taskifybackend.core.models.UserSettingsEntity;
 import com.pytka.taskifybackend.core.repositories.UserRepository;
 import com.pytka.taskifybackend.core.repositories.UserSettingsRepository;
+import com.pytka.taskifybackend.core.services.StatsService;
 import com.pytka.taskifybackend.core.services.UserSettingsService;
 import com.pytka.taskifybackend.core.services.WorkspaceService;
 import com.pytka.taskifybackend.core.utils.PasswordChecker;
@@ -49,6 +50,8 @@ public class AuthService {
 
     private final WorkspaceService workspaceService;
 
+    private final StatsService statsService;
+
     public AuthResponse register(RegisterRequest request){
 
         String email = request.getEmail();
@@ -81,18 +84,20 @@ public class AuthService {
             throw new DataCouldNotBeSavedException(UserEntity.class, userEntity.getEmail(), e);
         }
 
-        this.userSettingsService.createUserSettingsRecordByUser(userEntity.getID());
-        this.workspaceService.addWorkspace(userEntity.getID());
+        this.createRecordsWhileRegistering(userEntity.getID());
 
         String jwtToken = jwtService.generateToken(userEntity);
-
-        userEntity = this.userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
 
         return AuthResponse.builder()
                 .ID(userEntity.getID())
                 .token(jwtToken)
                 .build();
+    }
+
+    private void createRecordsWhileRegistering(Long userID){
+        this.statsService.addUserStats(userID);
+        this.userSettingsService.createUserSettingsRecordByUser(userID);
+        this.workspaceService.addWorkspace(userID);
     }
 
     public AuthResponse login(AuthenticationRequest request){

@@ -13,6 +13,8 @@ public interface TaskService {
 
     List<TaskDTO> getTasksByWorkspaceID(Long workspaceID);
 
+    TaskDTO getTaskByID(Long taskID);
+
     boolean updateTask(Long taskID, TaskDTO taskDTO);
 
     boolean deleteTask(long taskID);
