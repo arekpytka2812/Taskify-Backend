@@ -39,8 +39,6 @@ public class TaskServiceImpl implements TaskService {
 
     private final StatsRepository statsRepository;
 
-    //TODO; delete taskID, now taskID comes in taskDTO
-
     @Override
     public List<TaskDTO> getTasksByWorkspaceID(Long workspaceID){
 
@@ -52,6 +50,17 @@ public class TaskServiceImpl implements TaskService {
                 this.taskRepository.getTasksByWorkspaceID(workspaceID)
         );
 
+    }
+
+    @Override
+    public TaskDTO getTaskByID(Long taskID){
+
+        TaskEntity task = this.taskRepository.findById(taskID)
+                .orElseThrow(() ->
+                        new DataNotFoundException(TaskEntity.class, taskID)
+                );
+
+        return taskMapper.mapToDTO(task);
     }
 
     @Override

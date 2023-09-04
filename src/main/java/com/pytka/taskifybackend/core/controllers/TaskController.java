@@ -20,12 +20,20 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/get/{workspaceID}")
+    @GetMapping("/getAll/{workspaceID}")
     @RolesAllowed("USER")
     public ResponseEntity<List<TaskDTO>> getTasksByWorkspaceID(
             @PathVariable("workspaceID") Long workspaceID
     ) {
         return ResponseEntity.ok(this.taskService.getTasksByWorkspaceID(workspaceID));
+    }
+
+    @GetMapping("/get/{taskID}")
+    @RolesAllowed("USER")
+    public ResponseEntity<TaskDTO> getTaskByID(
+            @PathVariable("taskID") Long taskID
+    ) {
+        return ResponseEntity.ok(this.taskService.getTaskByID(taskID));
     }
 
     @PostMapping("/update/{taskID}")
