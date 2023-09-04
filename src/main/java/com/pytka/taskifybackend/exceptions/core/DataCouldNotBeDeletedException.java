@@ -1,4 +1,4 @@
-package com.pytka.taskifybackend.core.exceptions.core;
+package com.pytka.taskifybackend.exceptions.core;
 
 public class DataCouldNotBeDeletedException extends RuntimeException{
 

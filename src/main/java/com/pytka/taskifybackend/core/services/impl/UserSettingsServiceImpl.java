@@ -1,6 +1,6 @@
 package com.pytka.taskifybackend.core.services.impl;
 
-import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.core.models.UserSettingsEntity;
 import com.pytka.taskifybackend.core.repositories.UserSettingsRepository;
 import com.pytka.taskifybackend.core.services.UserSettingsService;

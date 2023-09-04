@@ -1,7 +1,7 @@
 package com.pytka.taskifybackend.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pytka.taskifybackend.core.exceptions.ApiError;
+import com.pytka.taskifybackend.exceptions.ApiError;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

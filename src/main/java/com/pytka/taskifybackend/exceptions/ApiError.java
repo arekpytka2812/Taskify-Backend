@@ -1,4 +1,4 @@
-package com.pytka.taskifybackend.core.exceptions;
+package com.pytka.taskifybackend.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

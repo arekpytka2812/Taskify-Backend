@@ -2,12 +2,11 @@ package com.pytka.taskifybackend.core.services.impl;
 
 import com.pytka.taskifybackend.core.DTOs.TaskDTO;
 import com.pytka.taskifybackend.core.DTOs.UpdateInfoDTO;
-import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeDeletedException;
-import com.pytka.taskifybackend.core.exceptions.core.DataCouldNotBeSavedException;
-import com.pytka.taskifybackend.core.exceptions.core.DataNotFoundException;
-import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeDeletedException;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
+import com.pytka.taskifybackend.exceptions.core.DataNotFoundException;
+import com.pytka.taskifybackend.exceptions.core.UserNotFoundException;
 import com.pytka.taskifybackend.core.mappers.TaskMapper;
-import com.pytka.taskifybackend.core.mappers.UpdateInfoMapper;
 import com.pytka.taskifybackend.core.models.StatsEntity;
 import com.pytka.taskifybackend.core.models.TaskEntity;
 import com.pytka.taskifybackend.core.models.UpdateInfoEntity;
