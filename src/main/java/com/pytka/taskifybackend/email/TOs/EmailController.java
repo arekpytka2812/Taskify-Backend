@@ -1,4 +1,4 @@
-package com.pytka.taskifybackend.email;
+package com.pytka.taskifybackend.email.TOs;
 
 import com.pytka.taskifybackend.email.service.EmailService;
 import jakarta.annotation.security.RolesAllowed;

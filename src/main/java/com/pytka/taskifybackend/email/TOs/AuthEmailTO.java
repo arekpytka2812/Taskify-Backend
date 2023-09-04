@@ -1,4 +1,4 @@
-package com.pytka.taskifybackend.email;
+package com.pytka.taskifybackend.email.TOs;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

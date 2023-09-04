@@ -1,9 +1,9 @@
 package com.pytka.taskifybackend.email.service.impl;
 
 
-import com.pytka.taskifybackend.email.AuthEmailTO;
-import com.pytka.taskifybackend.email.EmailTO;
-import com.pytka.taskifybackend.email.NotificationEmailTO;
+import com.pytka.taskifybackend.email.TOs.AuthEmailTO;
+import com.pytka.taskifybackend.email.TOs.EmailTO;
+import com.pytka.taskifybackend.email.TOs.NotificationEmailTO;
 import com.pytka.taskifybackend.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

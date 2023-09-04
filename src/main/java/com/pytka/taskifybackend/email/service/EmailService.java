@@ -1,8 +1,8 @@
 package com.pytka.taskifybackend.email.service;
 
-import com.pytka.taskifybackend.email.AuthEmailTO;
-import com.pytka.taskifybackend.email.EmailTO;
-import com.pytka.taskifybackend.email.NotificationEmailTO;
+import com.pytka.taskifybackend.email.TOs.AuthEmailTO;
+import com.pytka.taskifybackend.email.TOs.EmailTO;
+import com.pytka.taskifybackend.email.TOs.NotificationEmailTO;
 
 public interface EmailService {
 
