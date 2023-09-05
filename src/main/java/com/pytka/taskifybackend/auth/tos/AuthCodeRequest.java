@@ -1,23 +1,23 @@
 package com.pytka.taskifybackend.auth.tos;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-public class RegisterRequest {
+public class AuthCodeRequest {
 
-    private String firstname;
-    private String lastname;
     private String email;
+
     private String username;
-    private String password;
+
     private String authCode;
-    private LocalDateTime sentDate;
+
+    private LocalDateTime sentRequestDate;
+
 }

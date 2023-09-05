@@ -1,13 +1,8 @@
 package com.pytka.taskifybackend.auth.controllers;
 
-import com.pytka.taskifybackend.auth.tos.AuthResponse;
+import com.pytka.taskifybackend.auth.tos.*;
 import com.pytka.taskifybackend.auth.services.impl.AuthService;
-import com.pytka.taskifybackend.auth.tos.AuthenticationRequest;
-import com.pytka.taskifybackend.auth.tos.ChangePasswordRequest;
-import com.pytka.taskifybackend.auth.tos.RegisterRequest;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
+    @PostMapping("/generateCode")
+    public void generateRegisterCode(
+            @RequestBody AuthCodeRequest request
+    ) {
+        this.authService.generateRegisterCode(request);
+    }
+
+    @PostMapping("/regenerateCode")
+    public void regenerateCode(
+            @RequestBody AuthCodeRequest request
+    ) {
+        this.authService.regenerateRegisterCode(request);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
