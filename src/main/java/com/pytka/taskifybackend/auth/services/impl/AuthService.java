@@ -105,6 +105,7 @@ public class AuthService {
 
         entity.setCode(newCode);
         entity.setExpirationDate(LocalDateTime.now().plusMinutes(3));
+        entity.setUpdateDate(LocalDateTime.now());
 
         this.userRegisterCodeRepository.save(entity);
 
