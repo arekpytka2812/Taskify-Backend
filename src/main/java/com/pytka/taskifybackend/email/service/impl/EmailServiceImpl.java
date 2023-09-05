@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sender);
-        message.setTo(email.getTo());
+        message.setTo(email.getEmail());
         message.setSubject(email.getSubject());
         message.setText(email.getBody());
 
@@ -37,6 +37,20 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmailForAuthentication(AuthEmailTO authEmailTO) {
 
+         String authCodeEmailBody =
+                "Hello " + authEmailTO.getUsername() + "\n\n"
+                + "This is you authentication code:\n"
+                + authEmailTO.getAuthCode() + "\n\n"
+                + "Copy it and paste into text field in app!\n"
+                + "Wishing You happy using of Taskify!";
+
+         SimpleMailMessage message = new SimpleMailMessage();
+
+         message.setTo(authEmailTO.getEmail());
+         message.setSubject("Your Authorization Code!");
+         message.setText(authCodeEmailBody);
+
+         mailSender.send(message);
     }
 
     @Override

@@ -12,4 +12,5 @@ import lombok.experimental.SuperBuilder;
 public class AuthEmailTO extends EmailTO {
 
     private String authCode;
+
 }

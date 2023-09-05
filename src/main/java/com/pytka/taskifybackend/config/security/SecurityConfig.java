@@ -56,6 +56,10 @@ public class SecurityConfig {
 
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
+                .requestMatchers("/auth/generateCode")
+                .permitAll()
+                .requestMatchers("/auth/regenerateCode")
+                .permitAll()
                 .requestMatchers("/auth/register")
                 .permitAll()
                 .requestMatchers("/auth/login")

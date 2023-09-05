@@ -12,7 +12,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class EmailTO {
 
-    private String to;
+    private String email;
+
+    private String username;
 
     private String subject;
 

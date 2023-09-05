@@ -6,7 +6,13 @@ public class DataNotFoundException extends RuntimeException{
         super("[DATA] Data with id: " + id + " not found.");
     }
 
+    public <T> DataNotFoundException(Class<T> clazz){
+        super("[DATA] Data of type: " + clazz.getSimpleName() + " not found.");
+    }
+
     public <T> DataNotFoundException(Class<T> clazz, long id){
         super("[DATA] Data of type: " + clazz.getSimpleName() + " with id: " + id + " not found.");
     }
+
+
 }

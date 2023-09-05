@@ -1,6 +1,8 @@
 package com.pytka.taskifybackend.exceptions.handlers;
 
 import com.pytka.taskifybackend.exceptions.ApiError;
+import com.pytka.taskifybackend.exceptions.auth.AuthCodeDoesNotMatchException;
+import com.pytka.taskifybackend.exceptions.auth.AuthCodeExpiredException;
 import com.pytka.taskifybackend.exceptions.auth.EmailAlreadyExistsException;
 import com.pytka.taskifybackend.exceptions.auth.TooWeakPasswordException;
 import com.pytka.taskifybackend.exceptions.core.UserNotFoundException;
@@ -52,5 +54,19 @@ public class AuthHandler {
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.statusCode()));
+    }
+
+    @ExceptionHandler({AuthCodeDoesNotMatchException.class, AuthCodeExpiredException.class})
+    public ResponseEntity<ApiError> handleAuthCodeExceptions(Exception e,HttpServletRequest request){
+
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                e.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.statusCode()));
+
     }
 }
