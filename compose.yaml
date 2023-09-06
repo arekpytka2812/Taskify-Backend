@@ -1,4 +1,16 @@
 services:
+
+  rabbitmq:
+    image: "rabbitmq:3.8-management" # Use the official RabbitMQ image with the management plugin
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # RabbitMQ default port
+      - "15672:15672" # RabbitMQ Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: taskify
+      RABBITMQ_DEFAULT_PASS: taskify
+    volumes:
+      - "./rabbitmq-data:/var/lib/rabbitmq" # Persist RabbitMQ dat
   postgres:
     image: 'postgres:latest'
     environment:

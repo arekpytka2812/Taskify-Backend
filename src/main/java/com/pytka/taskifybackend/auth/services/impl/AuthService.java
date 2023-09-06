@@ -6,6 +6,7 @@ import com.pytka.taskifybackend.auth.tos.*;
 import com.pytka.taskifybackend.auth.utils.AuthCodeGenerator;
 import com.pytka.taskifybackend.config.security.JwtService;
 import com.pytka.taskifybackend.email.TOs.AuthEmailTO;
+import com.pytka.taskifybackend.email.service.EmailProducer;
 import com.pytka.taskifybackend.email.service.EmailService;
 import com.pytka.taskifybackend.exceptions.auth.*;
 import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
@@ -50,7 +51,7 @@ public class AuthService {
 
     private final StatsService statsService;
 
-    private final EmailService emailService;
+    private final EmailProducer emailProducer;
 
     private final AuthCodeGenerator codeGenerator;
 
@@ -87,9 +88,10 @@ public class AuthService {
                 .username(username)
                 .authCode(authCode)
                 .subject("Your Authentication Code!")
+                .type("auth")
                 .build();
 
-        this.emailService.sendEmailForAuthentication(authEmail);
+        this.emailProducer.sendEmail(authEmail);
     }
 
     public void regenerateRegisterCode(AuthCodeRequest request){

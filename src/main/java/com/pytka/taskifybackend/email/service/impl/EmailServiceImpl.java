@@ -1,15 +1,20 @@
 package com.pytka.taskifybackend.email.service.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pytka.taskifybackend.email.TOs.AuthEmailTO;
 import com.pytka.taskifybackend.email.TOs.EmailTO;
 import com.pytka.taskifybackend.email.TOs.NotificationEmailTO;
 import com.pytka.taskifybackend.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,11 +24,41 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
 
+    private final ObjectMapper objectMapper;
+
     @Value("${spring.mail.username}")
     private String sender;
 
     @Override
-    public void sendEmail(EmailTO email) {
+    @RabbitListener(queues = "email-queue")
+    public void processEmail(String emailMessage) {
+
+        try {
+            EmailTO emailBase = objectMapper.readValue(emailMessage, EmailTO.class);
+
+            String emailType = emailBase.getType();
+
+            if(emailType.equals("auth")){
+                AuthEmailTO authEmailTO = objectMapper.readValue(emailMessage, AuthEmailTO.class);
+                sendEmailForAuthentication(authEmailTO);
+            }
+            else if(emailType.equals("notification")){
+                NotificationEmailTO notificationEmailTO
+                        = objectMapper.readValue(emailMessage, NotificationEmailTO.class);
+                sendEmailAsNotification(notificationEmailTO);
+            }
+            else{
+                sendEmail(emailBase);
+            }
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Async
+    protected void sendEmail(EmailTO email){
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sender);
@@ -34,8 +69,9 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
     }
 
-    @Override
-    public void sendEmailForAuthentication(AuthEmailTO authEmailTO) {
+
+    @Async
+    protected void sendEmailForAuthentication(AuthEmailTO authEmailTO) {
 
          String authCodeEmailBody =
                 "Hello " + authEmailTO.getUsername() + "\n\n"
@@ -53,8 +89,8 @@ public class EmailServiceImpl implements EmailService {
          mailSender.send(message);
     }
 
-    @Override
-    public void sendEmailAsNotification(NotificationEmailTO notificationEmailTO) {
+    @Async
+    protected void sendEmailAsNotification(NotificationEmailTO notificationEmailTO) {
 
     }
 }

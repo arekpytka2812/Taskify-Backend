@@ -20,4 +20,6 @@ public class EmailTO {
 
     private String body;
 
+    private String type;
+
 }
