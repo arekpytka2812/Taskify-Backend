@@ -1,7 +1,7 @@
 package com.pytka.taskifybackend.auth.controllers;
 
 import com.pytka.taskifybackend.auth.tos.*;
-import com.pytka.taskifybackend.auth.services.impl.AuthService;
+import com.pytka.taskifybackend.auth.services.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
 
     @PostMapping("/generateCode")
     public void generateRegisterCode(
@@ -49,5 +49,19 @@ public class AuthController {
             @RequestBody ChangePasswordRequest request
     ) {
         return ResponseEntity.ok(this.authService.changePassword(request));
+    }
+
+    @PostMapping("/remindPassword")
+    public void remindPassword(
+            @RequestBody RemindPasswordRequest request
+    ) {
+        this.authService.remindPassword(request);
+    }
+
+    @PostMapping("/setNewPassword")
+    public ResponseEntity<AuthResponse> setNewPassword(
+            @RequestBody ForgottenPasswordRequest request
+    ) {
+        return ResponseEntity.ok(this.authService.setNewPasswordAfterReset(request));
     }
 }

@@ -1,12 +1,12 @@
 package com.pytka.taskifybackend.exceptions.auth;
 
-public class AuthCodeExpiredException extends RuntimeException {
+public class VerificationCodeExpiredException extends RuntimeException {
 
-    public AuthCodeExpiredException(String email){
+    public VerificationCodeExpiredException(String email){
         super("[Auth] Auth code for email " + email + " has expired.");
     }
 
-    public AuthCodeExpiredException(String email, Throwable cause){
+    public VerificationCodeExpiredException(String email, Throwable cause){
         super("[Auth] Auth code for email " + email + " has expired.", cause);
     }
 }

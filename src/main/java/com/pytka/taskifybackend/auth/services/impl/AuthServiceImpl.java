@@ -1,13 +1,13 @@
 package com.pytka.taskifybackend.auth.services.impl;
 
-import com.pytka.taskifybackend.auth.models.UserRegisterCodeEntity;
-import com.pytka.taskifybackend.auth.repositories.UserRegisterCodeRepository;
+import com.pytka.taskifybackend.auth.models.UserVerificationCodeEntity;
+import com.pytka.taskifybackend.auth.repositories.UserVerificationCodeRepository;
+import com.pytka.taskifybackend.auth.services.AuthService;
 import com.pytka.taskifybackend.auth.tos.*;
 import com.pytka.taskifybackend.auth.utils.AuthCodeGenerator;
 import com.pytka.taskifybackend.config.security.JwtService;
 import com.pytka.taskifybackend.email.TOs.AuthEmailTO;
 import com.pytka.taskifybackend.email.service.EmailProducer;
-import com.pytka.taskifybackend.email.service.EmailService;
 import com.pytka.taskifybackend.exceptions.auth.*;
 import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.exceptions.core.DataNotFoundException;
@@ -33,11 +33,11 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-    private final UserRegisterCodeRepository userRegisterCodeRepository;
+    private final UserVerificationCodeRepository userVerificationCodeRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -65,17 +65,17 @@ public class AuthService {
 
         String authCode = codeGenerator.generateCode(email);
 
-        UserRegisterCodeEntity userRegisterCodeEntity = UserRegisterCodeEntity.builder()
+        UserVerificationCodeEntity userVerificationCodeEntity = UserVerificationCodeEntity.builder()
                 .email(email)
                 .code(authCode)
                 .expirationDate(LocalDateTime.now().plusMinutes(3))
                 .build();
 
         try{
-            userRegisterCodeRepository.save(userRegisterCodeEntity);
+            userVerificationCodeRepository.save(userVerificationCodeEntity);
         }
         catch (DataAccessException e) {
-            throw new DataCouldNotBeSavedException(UserRegisterCodeEntity.class, request.getEmail(), e);
+            throw new DataCouldNotBeSavedException(UserVerificationCodeEntity.class, request.getEmail(), e);
         }
 
         sendRegisterEmail(email, request.getUsername(), authCode);
@@ -98,7 +98,7 @@ public class AuthService {
 
         String email = request.getEmail();
 
-        UserRegisterCodeEntity entity = this.userRegisterCodeRepository.findByEmail(email)
+        UserVerificationCodeEntity entity = this.userVerificationCodeRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new EmailNotFoundException(email)
                 );
@@ -109,7 +109,7 @@ public class AuthService {
         entity.setExpirationDate(LocalDateTime.now().plusMinutes(3));
         entity.setUpdateDate(LocalDateTime.now());
 
-        this.userRegisterCodeRepository.save(entity);
+        this.userVerificationCodeRepository.save(entity);
 
         sendRegisterEmail(email, request.getUsername(), newCode);
     }
@@ -162,21 +162,25 @@ public class AuthService {
 
     private void checkRegisterCode(AuthCodeRequest request){
 
-        UserRegisterCodeEntity userRegisterCodeEntity =
-                userRegisterCodeRepository.findByEmail(request.getEmail())
+        UserVerificationCodeEntity userVerificationCodeEntity =
+                userVerificationCodeRepository.findByEmail(request.getEmail())
                         .orElseThrow(() ->
-                                new DataNotFoundException(UserRegisterCodeEntity.class)
+                                new DataNotFoundException(UserVerificationCodeEntity.class)
                         );
 
-        if(!userRegisterCodeEntity.getCode().equals(request.getAuthCode())){
-            throw new AuthCodeDoesNotMatchException(request.getEmail());
+        if(!userVerificationCodeEntity.getCode().equals(request.getAuthCode())){
+            throw new VerificationCodeDoesNotMatchException(request.getEmail());
         }
 
-        if(userRegisterCodeEntity.getExpirationDate().isBefore(request.getSentRequestDate())){
-            throw new AuthCodeExpiredException(request.getEmail());
+        if(userVerificationCodeEntity.getExpirationDate().isBefore(request.getSentRequestDate())){
+            throw new VerificationCodeExpiredException(request.getEmail());
         }
 
-        this.userRegisterCodeRepository.delete(userRegisterCodeEntity);
+        if(request.getSentRequestDate().isBefore(userVerificationCodeEntity.getCreateDate())){
+            throw new VerificationCodeExpiredException(request.getEmail());
+        }
+
+        this.userVerificationCodeRepository.delete(userVerificationCodeEntity);
     }
 
     private void createRecordsWhileRegistering(Long userID){
@@ -236,7 +240,82 @@ public class AuthService {
         String newToken = jwtService.generateToken(user);
 
         return AuthResponse.builder()
+                .ID(user.getID())
                 .token(newToken)
                 .build();
+    }
+
+    @Override
+    public void remindPassword(RemindPasswordRequest request){
+
+        UserEntity user = this.userRepository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        String verificationCode = codeGenerator.generateCode(request.getEmail());
+
+        UserVerificationCodeEntity entity = UserVerificationCodeEntity.builder()
+                .email(request.getEmail())
+                .code(verificationCode)
+                .expirationDate(LocalDateTime.now().plusMinutes(5))
+                .build();
+
+        try{
+            this.userVerificationCodeRepository.save(entity);
+        }
+        catch(DataAccessException e){
+            throw new DataCouldNotBeSavedException(UserVerificationCodeEntity.class, e);
+        }
+
+        sendRegisterEmail(request.getEmail(), user.getUsername(), verificationCode);
+    }
+
+    @Override
+    public AuthResponse setNewPasswordAfterReset(ForgottenPasswordRequest request){
+
+        UserEntity user = this.userRepository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        UserVerificationCodeEntity verificationCodeEntity = this.userVerificationCodeRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new DataNotFoundException(UserVerificationCodeEntity.class));
+
+        if(!verificationCodeEntity.getCode().equals(request.getVerificationCode())){
+            throw new VerificationCodeDoesNotMatchException(request.getEmail());
+        }
+
+        if(verificationCodeEntity.getExpirationDate().isBefore(request.getSentDate())){
+            throw new VerificationCodeExpiredException(request.getEmail());
+        }
+
+        if(request.getSentDate().isBefore(verificationCodeEntity.getCreateDate())){
+            throw new VerificationCodeExpiredException(request.getEmail());
+        }
+
+        this.userVerificationCodeRepository.delete(verificationCodeEntity);
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
+        user.setPassword(encodedPassword);
+
+        try{
+            userRepository.save(user);
+        }
+        catch (DataAccessException e){
+            throw new DataCouldNotBeSavedException(UserEntity.class, e);
+        }
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        String newToken = jwtService.generateToken(user);
+
+        return AuthResponse.builder()
+                .ID(user.getID())
+                .token(newToken)
+                .build();
+
     }
 }
