@@ -91,6 +91,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     protected void sendEmailAsNotification(NotificationEmailTO notificationEmailTO) {
+        SimpleMailMessage message = new SimpleMailMessage();
 
+        message.setTo(notificationEmailTO.getEmail());
+        message.setSubject(notificationEmailTO.getSubject());
+        message.setText(notificationEmailTO.getBody());
+
+        mailSender.send(message);
     }
 }
