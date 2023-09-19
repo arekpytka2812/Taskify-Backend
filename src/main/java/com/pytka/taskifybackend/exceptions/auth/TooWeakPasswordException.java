@@ -1,4 +1,4 @@
-package com.pytka.taskifybackend.core.exceptions.auth;
+package com.pytka.taskifybackend.exceptions.auth;
 
 
 public class TooWeakPasswordException extends RuntimeException{

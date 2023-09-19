@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,19 +30,22 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "taskType")
     private String taskType;
 
-    @JoinColumn(name = "CR_USER", referencedColumnName = "ID")
-    @Column(name = "userID")
-    private Long userID;
-
     @Column(name = "priority")
     private String priority;
+
+    @Column(name = "notifications")
+    private Boolean notifications = false;
+
+    @JoinColumn(name = "WORKSPACES", referencedColumnName = "ID")
+    @Column(name = "workspaceID", nullable = false)
+    private Long workspaceID;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "UPDATE_INFO", referencedColumnName = "ID")
     @Column(name = "taskUpdates")
     private List<UpdateInfoEntity> taskUpdates;
 
-    @Column(name = "expirationDate", nullable = true)
+    @Column(name = "expirationDate")
     private LocalDateTime expirationDate;
 
 }

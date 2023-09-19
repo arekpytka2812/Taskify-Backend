@@ -1,9 +1,9 @@
-package com.pytka.taskifybackend.core.exceptions.handlers;
+package com.pytka.taskifybackend.exceptions.handlers;
 
-import com.pytka.taskifybackend.core.exceptions.ApiError;
-import com.pytka.taskifybackend.core.exceptions.auth.EmailAlreadyExistsException;
-import com.pytka.taskifybackend.core.exceptions.auth.TooWeakPasswordException;
-import com.pytka.taskifybackend.core.exceptions.core.UserNotFoundException;
+import com.pytka.taskifybackend.exceptions.ApiError;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeDeletedException;
+import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
+import com.pytka.taskifybackend.exceptions.core.DataNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,23 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class AuthHandler {
+public class CoreHandler {
 
-    @ExceptionHandler(TooWeakPasswordException.class)
-    public ResponseEntity<ApiError> handlePasswordException(Exception e, HttpServletRequest request){
-
-        ApiError apiError = new ApiError(
-                request.getRequestURI(),
-                e.getMessage(),
-                HttpStatus.CONFLICT.value(),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.statusCode()));
-    }
-
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleEmailException(Exception e, HttpServletRequest request){
+    @ExceptionHandler(DataCouldNotBeSavedException.class)
+    public ResponseEntity<ApiError> handleDataCouldNotBeSavedException(Exception e, HttpServletRequest request){
 
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
@@ -41,13 +28,27 @@ public class AuthHandler {
         return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.statusCode()));
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiError> handleUserNotFound(Exception e, HttpServletRequest request){
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<ApiError> handleDataNotFoundException(Exception e, HttpServletRequest request){
 
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
                 e.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.statusCode()));
+    }
+
+    @ExceptionHandler(DataCouldNotBeDeletedException.class)
+    public ResponseEntity<ApiError> handleDataCouldNotBeDeletedException(Exception e, HttpServletRequest request){
+
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                e.getMessage(),
+                HttpStatus.CONFLICT.value(),
                 LocalDateTime.now()
         );
 
