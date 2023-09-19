@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Table(name = "USER_REGISTER_CODE")
 @Entity
-public class UserRegisterCodeEntity extends AbstractEntity {
+public class UserVerificationCodeEntity extends AbstractEntity {
 
     @Column(name = "email", unique = true)
     private String email;
