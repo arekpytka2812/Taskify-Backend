@@ -13,9 +13,10 @@ services:
       - "./rabbitmq-data:/var/lib/rabbitmq" # Persist RabbitMQ dat
   postgres:
     image: 'postgres:latest'
+    container_name: "${CONTAINER_NAME}"
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     ports:
-      - '5432'
+      - '5332:5432'

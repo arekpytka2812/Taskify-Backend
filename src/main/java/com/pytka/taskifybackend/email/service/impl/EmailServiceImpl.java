@@ -8,7 +8,6 @@ import com.pytka.taskifybackend.email.TOs.EmailTO;
 import com.pytka.taskifybackend.email.TOs.NotificationEmailTO;
 import com.pytka.taskifybackend.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -91,6 +90,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     protected void sendEmailAsNotification(NotificationEmailTO notificationEmailTO) {
+        SimpleMailMessage message = new SimpleMailMessage();
 
+        message.setTo(notificationEmailTO.getEmail());
+        message.setSubject(notificationEmailTO.getSubject());
+        message.setText(notificationEmailTO.getBody());
+
+        mailSender.send(message);
     }
 }

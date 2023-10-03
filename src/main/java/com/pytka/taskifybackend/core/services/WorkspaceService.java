@@ -13,7 +13,7 @@ public interface WorkspaceService {
 
     boolean addWorkspace(Long userID);
 
-    boolean addWorkspace(Long userID, WorkspaceDTO workspaceDTO);
+    boolean addWorkspace(Long userID, WorkspaceLiteDTO workspaceDTO);
 
     boolean updateWorkspace(Long workspaceID, WorkspaceDTO workspaceDTO);
 
