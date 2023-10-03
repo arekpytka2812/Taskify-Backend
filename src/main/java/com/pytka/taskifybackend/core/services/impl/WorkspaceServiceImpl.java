@@ -65,7 +65,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public boolean addWorkspace(Long userID) {
 
-        WorkspaceDTO workspaceDTO = WorkspaceDTO.builder()
+        WorkspaceLiteDTO workspaceDTO = WorkspaceLiteDTO.builder()
                 .name("First Workspace!")
                 .build();
 
@@ -73,7 +73,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public boolean addWorkspace(Long userID, WorkspaceDTO workspaceDTO) {
+    public boolean addWorkspace(Long userID, WorkspaceLiteDTO workspaceDTO) {
 
         if(!this.userRepository.existsById(userID)){
             throw new UserNotFoundException(userID);

@@ -30,7 +30,7 @@ public class EmailSchedulerImpl implements EmailScheduler {
     @Scheduled(cron = "${scheduling.email.notification.cron}")
     public void sendNotificationEmails() {
         EmailTO email = NotificationEmailTO.builder()
-                .email("")
+                .email("262753@student.pwr.edu.pl")
                 .subject("Scheduler Test Email!")
                 .body("This is scheduled email.\nPS plz work")
                 .type("notification")

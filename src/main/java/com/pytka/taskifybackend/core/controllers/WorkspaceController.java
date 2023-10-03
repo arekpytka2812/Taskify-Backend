@@ -37,7 +37,7 @@ public class WorkspaceController {
     @RolesAllowed("USER")
     public ResponseEntity<Boolean> addWorkspace(
             @PathVariable("userID") Long userID,
-            @RequestBody WorkspaceDTO workspaceDTO
+            @RequestBody WorkspaceLiteDTO workspaceDTO
     ) {
         return ResponseEntity.ok(this.workspaceService.addWorkspace(userID, workspaceDTO));
     }
