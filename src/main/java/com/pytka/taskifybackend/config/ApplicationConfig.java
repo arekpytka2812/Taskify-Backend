@@ -1,6 +1,6 @@
 package com.pytka.taskifybackend.config;
 
-import com.pytka.taskifybackend.core.repositories.UserRepository;
+import com.pytka.taskifybackend.core.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
