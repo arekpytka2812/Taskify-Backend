@@ -11,11 +11,11 @@ public interface WorkspaceService {
 
     List<WorkspaceLiteDTO> getWorkspacesLiteByUserID(Long userID);
 
-    boolean addWorkspace(Long userID);
+    void addWorkspace(Long userID);
 
-    boolean addWorkspace(Long userID, WorkspaceLiteDTO workspaceDTO);
+    void addWorkspace(Long userID, WorkspaceLiteDTO workspaceDTO);
 
-    boolean updateWorkspace(Long workspaceID, WorkspaceDTO workspaceDTO);
+    void updateWorkspace(Long workspaceID, WorkspaceDTO workspaceDTO);
 
-    boolean deleteWorkspace(Long workspaceID);
+    void deleteWorkspace(Long workspaceID);
 }

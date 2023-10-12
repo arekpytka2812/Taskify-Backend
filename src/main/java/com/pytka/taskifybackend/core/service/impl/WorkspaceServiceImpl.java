@@ -13,6 +13,7 @@ import com.pytka.taskifybackend.core.model.WorkspaceEntity;
 import com.pytka.taskifybackend.core.repository.UserRepository;
 import com.pytka.taskifybackend.core.repository.WorkspaceRepository;
 import com.pytka.taskifybackend.core.service.WorkspaceService;
+import com.pytka.taskifybackend.scheduling.service.UserStatsSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final StatsService statsService;
 
+    private final UserStatsSender userStatsSender;
 
     @Override
     public List<WorkspaceDTO> getWorkspacesByUserID(Long userID) {
@@ -62,17 +64,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public boolean addWorkspace(Long userID) {
+    public void addWorkspace(Long userID) {
 
         WorkspaceLiteDTO workspaceDTO = WorkspaceLiteDTO.builder()
                 .name("First Workspace!")
                 .build();
 
-        return addWorkspace(userID, workspaceDTO);
+        addWorkspace(userID, workspaceDTO);
     }
 
     @Override
-    public boolean addWorkspace(Long userID, WorkspaceLiteDTO workspaceDTO) {
+    public void addWorkspace(Long userID, WorkspaceLiteDTO workspaceDTO) {
 
         if(!this.userRepository.existsById(userID)){
             throw new UserNotFoundException(userID);
@@ -92,11 +94,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         this.statsService.incrementCreatedWorkspaceNumber(userID);
 
-        return true;
+        this.userStatsSender.sendUserStats(userID);
+
     }
 
     @Override
-    public boolean updateWorkspace(Long workspaceID, WorkspaceDTO workspaceDTO) {
+    public void updateWorkspace(Long workspaceID, WorkspaceDTO workspaceDTO) {
 
         WorkspaceEntity workspaceEntity = this.workspaceRepository.findById(workspaceID)
                 .orElseThrow(() ->
@@ -113,11 +116,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new DataCouldNotBeSavedException(WorkspaceEntity.class, workspaceDTO.getName(), e);
         }
 
-        return true;
     }
 
     @Override
-    public boolean deleteWorkspace(Long workspaceID) {
+    public void deleteWorkspace(Long workspaceID) {
 
         WorkspaceEntity workspaceEntity = this.workspaceRepository.findById(workspaceID)
                 .orElseThrow(() ->
@@ -135,6 +137,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         this.statsService.incrementDeletedWorkspaceNumber(userID);
 
-        return true;
+        this.userStatsSender.sendUserStats(userID);
     }
 }

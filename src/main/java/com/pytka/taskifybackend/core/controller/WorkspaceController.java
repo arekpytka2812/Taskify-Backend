@@ -35,28 +35,34 @@ public class WorkspaceController {
 
     @PostMapping("/add/{userID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> addWorkspace(
+    public ResponseEntity<Void> addWorkspace(
             @PathVariable("userID") Long userID,
             @RequestBody WorkspaceLiteDTO workspaceDTO
     ) {
-        return ResponseEntity.ok(this.workspaceService.addWorkspace(userID, workspaceDTO));
+        this.workspaceService.addWorkspace(userID, workspaceDTO);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/update/{workspaceID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> updateWorkspace(
+    public ResponseEntity<Void> updateWorkspace(
             @PathVariable("workspaceID") Long workspaceID,
             @RequestBody WorkspaceDTO workspaceDTO
     ) {
-        return ResponseEntity.ok(this.workspaceService.updateWorkspace(workspaceID, workspaceDTO));
+        this.workspaceService.updateWorkspace(workspaceID, workspaceDTO);
+
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{workspaceID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> deleteWorkspace(
+    public ResponseEntity<Void> deleteWorkspace(
             @PathVariable("workspaceID") Long workspaceID
     ) {
-        return ResponseEntity.ok(this.workspaceService.deleteWorkspace(workspaceID));
+        this.workspaceService.deleteWorkspace(workspaceID);
+
+        return ResponseEntity.ok().build();
     }
 
 }

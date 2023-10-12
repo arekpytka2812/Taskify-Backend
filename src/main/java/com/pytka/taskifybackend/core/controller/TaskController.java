@@ -35,37 +35,45 @@ public class TaskController {
 
     @PostMapping("/update/{taskID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> updateTask(
+    public ResponseEntity<Void> updateTask(
             @PathVariable("taskID") Long taskID,
             @RequestBody TaskDTO taskDTO
     ) {
-        return ResponseEntity.ok(this.taskService.updateTask(taskID, taskDTO));
+        this.taskService.updateTask(taskID, taskDTO);
+
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{taskID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> deleteTask(
+    public ResponseEntity<Void> deleteTask(
             @PathVariable("taskID") long taskID
     ) {
-        return ResponseEntity.ok(this.taskService.deleteTask(taskID));
+        this.taskService.deleteTask(taskID);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/add/{userID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> addTask(
+    public ResponseEntity<Void> addTask(
             @PathVariable("userID") long userID,
             @RequestBody TaskDTO taskDTO
     ){
-        return ResponseEntity.ok(this.taskService.addTask(userID, taskDTO));
+        this.taskService.addTask(userID, taskDTO);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/updateInfo/{taskID}")
     @RolesAllowed("USER")
-    public ResponseEntity<Boolean> addTaskUpdate(
+    public ResponseEntity<Void> addTaskUpdate(
             @PathVariable("taskID") long taskID,
             @RequestBody UpdateInfoDTO updateInfoDTO
     ){
-        return ResponseEntity.ok(this.taskService.addTaskUpdate(taskID, updateInfoDTO));
+        this.taskService.addTaskUpdate(taskID, updateInfoDTO);
+
+        return ResponseEntity.ok().build();
     }
 
 }
