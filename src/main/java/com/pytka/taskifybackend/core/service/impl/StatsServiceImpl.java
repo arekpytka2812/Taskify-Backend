@@ -64,9 +64,10 @@ public class StatsServiceImpl implements StatsService {
                 );
 
         entity.setWorkspacesCreated(statsDTO.getWorkspacesCreated());
+        entity.setWorkspacesDeleted(statsDTO.getWorkspacesDeleted());
         entity.setTasksCreated(statsDTO.getTasksCreated());
-        entity.setUpdateInfosCreated(statsDTO.getUpdateInfosCreated());
         entity.setTasksDeleted(statsDTO.getTasksDeleted());
+        entity.setUpdateInfosCreated(statsDTO.getUpdateInfosCreated());
         entity.setFinishedOnTimeTasks(statsDTO.getFinishedOnTimeTasks());
         entity.setFinishedWithDelayTasks(statsDTO.getFinishedWithDelayTasks());
 

@@ -1,0 +1,1 @@
+insert into cr_user(email, password, role, create_date) values('test@gmail.com', 'Test1234', 1, localtimestamp(0));

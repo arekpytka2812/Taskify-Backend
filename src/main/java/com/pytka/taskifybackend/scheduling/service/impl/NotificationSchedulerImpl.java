@@ -1,9 +1,8 @@
 package com.pytka.taskifybackend.scheduling.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.pytka.taskifybackend.core.model.TaskNotification;
+import com.pytka.taskifybackend.core.model.TaskAppNotification;
 import com.pytka.taskifybackend.core.service.TaskService;
-import com.pytka.taskifybackend.scheduling.dto.TaskNotificationDTO;
+import com.pytka.taskifybackend.scheduling.dto.TaskAppNotificationDTO;
 import com.pytka.taskifybackend.scheduling.service.NotificationScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -31,19 +30,19 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
                 LocalDateTime.now().plusHours(1).format(formatter)
         );
 
-        List<TaskNotification> notifications = this.taskService.getTasksExpiringIn(taskTime);
+        List<TaskAppNotification> notifications = this.taskService.getTasksForAppNotifications(taskTime);
 
-        for(TaskNotification taskNotification : notifications){
-            String userChannel = "/user/" + taskNotification.getUserID() + "/notification";
-            String notificationMessage = "Your task: " + taskNotification.getTaskName()
-                    + " in workspace: " + taskNotification.getWorkspaceName()
+        for(TaskAppNotification taskAppNotification : notifications){
+            String userChannel = "/user/" + taskAppNotification.getUserID() + "/notification";
+            String notificationMessage = "Your task: " + taskAppNotification.getTaskName()
+                    + " in workspace: " + taskAppNotification.getWorkspaceName()
                     + " will expire in 1 hour!";
 
-            TaskNotificationDTO dto = TaskNotificationDTO.builder()
+            TaskAppNotificationDTO dto = TaskAppNotificationDTO.builder()
                             .message(notificationMessage)
                             .build();
 
-            System.out.println("\n[DEBUG - NOTIFICATION] At channel: " + userChannel + " sent notification : \n" + taskNotification.toString() + "\n");
+            System.out.println("\n[DEBUG - NOTIFICATION] At channel: " + userChannel + " sent notification : \n" + taskAppNotification.toString() + "\n");
 
             messagingTemplate.convertAndSend(userChannel, dto);
         }

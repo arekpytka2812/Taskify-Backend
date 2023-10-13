@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class TaskNotification {
+public class TaskAppNotification {
 
     private Long userID;
 
@@ -14,7 +14,7 @@ public class TaskNotification {
 
     private String taskName;
 
-    public TaskNotification(
+    public TaskAppNotification(
             Long userID,
             String workspaceName,
             String taskName

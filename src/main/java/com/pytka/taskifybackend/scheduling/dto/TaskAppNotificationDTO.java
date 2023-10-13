@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
-public class TaskNotificationDTO {
+public class TaskAppNotificationDTO {
 
     private String message;
 }
