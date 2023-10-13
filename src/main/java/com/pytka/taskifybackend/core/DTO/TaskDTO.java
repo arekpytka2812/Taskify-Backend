@@ -1,5 +1,6 @@
 package com.pytka.taskifybackend.core.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pytka.taskifybackend.core.abstraction.AbstractDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,13 +26,14 @@ public class TaskDTO extends AbstractDTO {
 
     private String priority;
 
-    private Boolean notifications;
+    private Boolean emailNotifications;
+
+    private Boolean appNotifications;
 
     private Long workspaceID;
 
     private List<UpdateInfoDTO> taskUpdates;
 
-    private LocalDateTime createDate;
-
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime expirationDate;
 }

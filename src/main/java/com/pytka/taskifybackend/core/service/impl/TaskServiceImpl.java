@@ -2,23 +2,23 @@ package com.pytka.taskifybackend.core.service.impl;
 
 import com.pytka.taskifybackend.core.DTO.TaskDTO;
 import com.pytka.taskifybackend.core.DTO.UpdateInfoDTO;
+import com.pytka.taskifybackend.core.mapper.UpdateInfoMapper;
+import com.pytka.taskifybackend.core.model.*;
 import com.pytka.taskifybackend.core.service.StatsService;
 import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeDeletedException;
 import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
 import com.pytka.taskifybackend.exceptions.core.DataNotFoundException;
 import com.pytka.taskifybackend.exceptions.core.UserNotFoundException;
 import com.pytka.taskifybackend.core.mapper.TaskMapper;
-import com.pytka.taskifybackend.core.model.StatsEntity;
-import com.pytka.taskifybackend.core.model.TaskEntity;
-import com.pytka.taskifybackend.core.model.UpdateInfoEntity;
-import com.pytka.taskifybackend.core.model.WorkspaceEntity;
 import com.pytka.taskifybackend.core.repository.*;
 import com.pytka.taskifybackend.core.service.TaskService;
+import com.pytka.taskifybackend.scheduling.service.UserStatsSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -35,9 +35,13 @@ public class TaskServiceImpl implements TaskService {
 
     private final UpdateInfoRepository updateInfoRepository;
 
+    private final UpdateInfoMapper updateInfoMapper;
+
     private final WorkspaceRepository workspaceRepository;
 
     private final StatsService statsService;
+
+    private final UserStatsSender userStatsSender;
 
     @Override
     public List<TaskDTO> getTasksByWorkspaceID(Long workspaceID){
@@ -64,7 +68,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean updateTask(Long taskID, TaskDTO taskDTO){
+    public void updateTask(Long taskID, TaskDTO taskDTO){
 
         TaskEntity task = this.taskRepository.findById(taskID)
                 .orElseThrow(() ->
@@ -83,11 +87,10 @@ public class TaskServiceImpl implements TaskService {
             throw new DataCouldNotBeSavedException(TaskEntity.class, task.getName(), e);
         }
 
-        return true;
     }
 
     @Override
-    public boolean deleteTask(long taskID){
+    public void deleteTask(long taskID){
 
         TaskEntity task = this.taskRepository.findById(taskID)
                 .orElseThrow(() ->
@@ -105,12 +108,13 @@ public class TaskServiceImpl implements TaskService {
 
         this.statsService.incrementDeletedTaskNumber(userID);
 
-        return true;
+        this.userStatsSender.sendUserStats(userID);
+
     }
 
     @Override
     @Transactional
-    public boolean addTask(long userID, TaskDTO taskDTO) {
+    public void addTask(long userID, TaskDTO taskDTO) {
 
         if(!this.userRepository.existsById(userID)){
             throw new UserNotFoundException(userID);
@@ -127,6 +131,10 @@ public class TaskServiceImpl implements TaskService {
                 .taskType(taskDTO.getTaskType())
                 .priority(taskDTO.getPriority())
                 .workspaceID(taskDTO.getWorkspaceID())
+                .emailNotifications(taskDTO.getEmailNotifications())
+                .appNotifications(taskDTO.getAppNotifications())
+                .taskUpdates(updateInfoMapper.mapToEntityList(taskDTO.getTaskUpdates()))
+                .expirationDate(taskDTO.getExpirationDate())
                 .build();
 
         try{
@@ -145,12 +153,13 @@ public class TaskServiceImpl implements TaskService {
 
         this.statsService.incrementOverallTaskNumber(userID);
 
-        return true;
+        this.userStatsSender.sendUserStats(userID);
+
     }
 
     @Override
     @Transactional
-    public boolean addTaskUpdate(long taskID, UpdateInfoDTO updateInfoDTO) {
+    public void addTaskUpdate(long taskID, UpdateInfoDTO updateInfoDTO) {
 
         TaskEntity task = this.taskRepository.findById(taskID)
                 .orElseThrow(() ->
@@ -176,10 +185,16 @@ public class TaskServiceImpl implements TaskService {
             throw new DataCouldNotBeSavedException(TaskEntity.class, e);
         }
 
-        this.statsService.incrementCreatedUpdateInfos(
-                this.taskRepository.getUserIDForTask(taskID)
-        );
+        Long userID = this.taskRepository.getUserIDForTask(taskID);
 
-        return true;
+        this.statsService.incrementCreatedUpdateInfos(userID);
+
+        this.userStatsSender.sendUserStats(userID);
+
+    }
+
+    @Override
+    public List<TaskNotification> getTasksExpiringIn(LocalDateTime taskTime){
+        return this.taskRepository.getExpiringTasksIn(taskTime);
     }
 }

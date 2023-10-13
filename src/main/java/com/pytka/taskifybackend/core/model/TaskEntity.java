@@ -1,5 +1,6 @@
 package com.pytka.taskifybackend.core.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pytka.taskifybackend.core.abstraction.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,8 +34,11 @@ public class TaskEntity extends AbstractEntity {
     @Column(name = "priority")
     private String priority;
 
-    @Column(name = "notifications")
-    private Boolean notifications = false;
+    @Column(name = "emailNotifications")
+    private Boolean emailNotifications = false;
+
+    @Column(name = "appNotifications")
+    private Boolean appNotifications = false;
 
     @JoinColumn(name = "WORKSPACES", referencedColumnName = "ID")
     @Column(name = "workspaceID", nullable = false)

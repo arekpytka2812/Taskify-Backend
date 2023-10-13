@@ -37,8 +37,12 @@ public class StatsServiceImpl implements StatsService {
         StatsEntity stats = StatsEntity.builder()
                 .userID(userID)
                 .workspacesCreated(0L)
+                .workspacesDeleted(0L)
                 .tasksCreated(0L)
+                .tasksDeleted(0L)
                 .updateInfosCreated(0L)
+                .finishedOnTimeTasks(0L)
+                .finishedWithDelayTasks(0L)
                 .build();
 
         try{

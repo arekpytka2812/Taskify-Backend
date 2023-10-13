@@ -26,24 +26,24 @@ public class StatsEntity extends AbstractEntity {
     private Long userID;
 
     @Column(name = "workspacesCreated")
-    private Long workspacesCreated;
+    private Long workspacesCreated = 0L;
 
     @Column(name = "workspacesDeleted")
-    private Long workspacesDeleted;
+    private Long workspacesDeleted = 0L;
 
     @Column(name = "tasksCreated")
-    private Long tasksCreated;
+    private Long tasksCreated = 0L;
 
     @Column(name = "tasksDeleted")
-    private Long tasksDeleted;
+    private Long tasksDeleted = 0L;
 
     @Column(name = "updateInfosCreated")
-    private Long updateInfosCreated;
+    private Long updateInfosCreated = 0L;
 
     @Column(name = "finishedOnTimeTasks")
-    private Long finishedOnTimeTasks;
+    private Long finishedOnTimeTasks = 0L;
 
     @Column(name = "finishedWithDelayTasks")
-    private Long finishedWithDelayTasks;
+    private Long finishedWithDelayTasks = 0L;
 
 }
