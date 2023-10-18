@@ -90,7 +90,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 .findByUserID(userID)
                 .orElseThrow(() -> new DataNotFoundException(UserSettingsEntity.class));
 
-        entity.setTaskTypes(taskPrioritiesDTO.getTaskPriorities());
+        entity.setTaskPriorities(taskPrioritiesDTO.getTaskPriorities());
 
         this.userSettingsRepository.save(entity);
     }

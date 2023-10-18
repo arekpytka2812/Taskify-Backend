@@ -20,7 +20,7 @@ public class UserSettingsController {
     private final AuthService authService;
 
     @GetMapping("/{userID}")
-    @RolesAllowed("ROLE_USER")
+    @RolesAllowed("USER")
     public ResponseEntity<UserSettingsDTO> getUserSettings(
             @PathVariable(name = "userID") Long userID
     ) {
@@ -30,7 +30,7 @@ public class UserSettingsController {
     }
 
     @GetMapping("/types/{userID}")
-    @RolesAllowed("ROLE_USER")
+    @RolesAllowed("USER")
     public ResponseEntity<TaskTypesDTO> getTaskTypesForUser(
             @PathVariable(name = "userID") Long userID
     ) {
@@ -40,7 +40,7 @@ public class UserSettingsController {
     }
 
     @GetMapping("/priorities/{userID}")
-    @RolesAllowed("ROLE_USER")
+    @RolesAllowed("USER")
     public ResponseEntity<TaskPrioritiesDTO> getTaskPrioritiesForUser(
             @PathVariable(name = "userID") Long userID
     ) {
@@ -50,7 +50,7 @@ public class UserSettingsController {
     }
 
     @PostMapping("/types/{userID}")
-    @RolesAllowed("ROLE_USER")
+    @RolesAllowed("USER")
     public ResponseEntity<Void> updateTaskTypes(
             @PathVariable(name = "userID") Long userID,
             @RequestBody TaskTypesDTO taskTypesDTO
@@ -61,7 +61,7 @@ public class UserSettingsController {
     }
 
     @PostMapping("/priorities/{userID}")
-    @RolesAllowed("ROLE_USER")
+    @RolesAllowed("USER")
     public ResponseEntity<Void> updateTaskPriorities(
             @PathVariable(name = "userID") Long userID,
             @RequestBody TaskPrioritiesDTO taskPrioritiesDTO
