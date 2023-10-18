@@ -79,6 +79,12 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskDTO.getDescription());
         task.setTaskType(taskDTO.getTaskType());
         task.setPriority(taskDTO.getPriority());
+        task.setEmailNotifications(taskDTO.getEmailNotifications());
+        task.setAppNotifications(taskDTO.getAppNotifications());
+        task.setTaskUpdates(
+                updateInfoMapper.mapToEntityList(taskDTO.getTaskUpdates())
+        );
+        task.setExpirationDate(taskDTO.getExpirationDate());
 
         try{
             this.taskRepository.save(task);
@@ -194,7 +200,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskNotification> getTasksExpiringIn(LocalDateTime taskTime){
-        return this.taskRepository.getExpiringTasksIn(taskTime);
+    public List<TaskAppNotification> getTasksForAppNotifications(LocalDateTime taskTime){
+        return this.taskRepository.getTasksForAppNotifications(taskTime);
     }
+
+    @Override
+    public List<TaskEmailNotification> getTasksForEmailNotifications(
+            LocalDateTime currentTime,
+            LocalDateTime expDate
+    ) {
+        return this.taskRepository.getTasksForEmailNotifications(currentTime, expDate);
+    }
+
 }

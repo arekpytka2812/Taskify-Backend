@@ -2,7 +2,8 @@ package com.pytka.taskifybackend.core.service;
 
 import com.pytka.taskifybackend.core.DTO.TaskDTO;
 import com.pytka.taskifybackend.core.DTO.UpdateInfoDTO;
-import com.pytka.taskifybackend.core.model.TaskNotification;
+import com.pytka.taskifybackend.core.model.TaskAppNotification;
+import com.pytka.taskifybackend.core.model.TaskEmailNotification;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,5 +23,7 @@ public interface TaskService {
 
     void addTaskUpdate(long taskID, UpdateInfoDTO updateInfoDTO);
 
-    List<TaskNotification> getTasksExpiringIn(LocalDateTime taskTime);
+    List<TaskAppNotification> getTasksForAppNotifications(LocalDateTime taskTime);
+
+    List<TaskEmailNotification> getTasksForEmailNotifications(LocalDateTime currentTime, LocalDateTime expDate);
 }

@@ -14,11 +14,13 @@ public class StatsDTO extends AbstractDTO {
 
     private Long workspacesCreated;
 
+    private Long workspacesDeleted;
+
     private Long tasksCreated;
 
-    private Long updateInfosCreated;
-
     private Long tasksDeleted;
+
+    private Long updateInfosCreated;
 
     private Long finishedOnTimeTasks;
 
