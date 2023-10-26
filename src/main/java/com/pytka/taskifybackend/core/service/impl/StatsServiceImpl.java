@@ -88,14 +88,14 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public void incrementDeletedWorkspaceNumber(Long userID){
+    public void incrementDeletedWorkspaceNumber(Long userID, Long count){
 
         StatsEntity entity = this.statsRepository.getUserStats(userID)
                 .orElseThrow(() ->
                         new DataNotFoundException(StatsEntity.class)
                 );
 
-        entity.setWorkspacesDeleted(entity.getWorkspacesDeleted() + 1);
+        entity.setWorkspacesDeleted(entity.getWorkspacesDeleted() + count);
 
         this.statsRepository.save(entity);
     }
@@ -114,14 +114,14 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public void incrementDeletedTaskNumber(Long userID){
+    public void incrementDeletedTaskNumber(Long userID, Long count){
 
         StatsEntity entity = this.statsRepository.getUserStats(userID)
                 .orElseThrow(() ->
                         new DataNotFoundException(StatsEntity.class)
                 );
 
-        entity.setTasksDeleted(entity.getTasksDeleted() + 1);
+        entity.setTasksDeleted(entity.getTasksDeleted() + count);
 
         this.statsRepository.save(entity);
     }

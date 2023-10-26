@@ -157,6 +157,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
                 .ID(userEntity.getID())
                 .token(jwtToken)
+                .username(userEntity.getRealUsername())
                 .build();
     }
 
@@ -206,6 +207,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
                 .ID(user.getID())
                 .token(token)
+                .username(user.getRealUsername())
                 .build();
     }
 
@@ -242,6 +244,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
                 .ID(user.getID())
                 .token(newToken)
+                .username(user.getRealUsername())
                 .build();
     }
 
@@ -315,6 +318,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
                 .ID(user.getID())
                 .token(newToken)
+                .username(user.getRealUsername())
                 .build();
 
     }

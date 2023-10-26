@@ -81,10 +81,10 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(taskDTO.getPriority());
         task.setEmailNotifications(taskDTO.getEmailNotifications());
         task.setAppNotifications(taskDTO.getAppNotifications());
-        task.setTaskUpdates(
-                updateInfoMapper.mapToEntityList(taskDTO.getTaskUpdates())
-        );
+
         task.setExpirationDate(taskDTO.getExpirationDate());
+
+        System.out.println(task);
 
         try{
             this.taskRepository.save(task);
@@ -112,7 +112,7 @@ public class TaskServiceImpl implements TaskService {
             throw new DataCouldNotBeDeletedException(TaskEntity.class, taskID);
         }
 
-        this.statsService.incrementDeletedTaskNumber(userID);
+        this.statsService.incrementDeletedTaskNumber(userID, 1L);
 
         this.userStatsSender.sendUserStats(userID);
 

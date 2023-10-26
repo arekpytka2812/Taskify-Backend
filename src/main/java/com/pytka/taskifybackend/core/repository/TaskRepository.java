@@ -54,4 +54,11 @@ public interface TaskRepository extends AbstractRepository<TaskEntity> {
             @Param("currentTime") LocalDateTime currentTime,
             @Param("expDate") LocalDateTime expDate
     );
+
+    @Query( "select count(*) " +
+            "from TaskEntity t " +
+            "where t.workspaceID = :workspaceID")
+    Long getTaskCountPerWorkspace(
+            @Param("workspaceID") Long workspaceID
+    );
 }

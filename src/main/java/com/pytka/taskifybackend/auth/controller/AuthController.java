@@ -1,7 +1,7 @@
 package com.pytka.taskifybackend.auth.controller;
 
 import com.pytka.taskifybackend.auth.TO.*;
-import com.pytka.taskifybackend.auth.service.impl.AuthServiceImpl;
+import com.pytka.taskifybackend.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     @PostMapping("/generateCode")
     public void generateRegisterCode(

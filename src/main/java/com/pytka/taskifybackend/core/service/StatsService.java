@@ -12,11 +12,11 @@ public interface StatsService {
 
     void incrementCreatedWorkspaceNumber(Long userID);
 
-    void incrementDeletedWorkspaceNumber(Long userID);
+    void incrementDeletedWorkspaceNumber(Long userID, Long count);
 
     void incrementOverallTaskNumber(Long userID);
 
-    void incrementDeletedTaskNumber(Long userID);
+    void incrementDeletedTaskNumber(Long userID, Long count);
 
     void incrementCreatedUpdateInfos(Long userID);
 
