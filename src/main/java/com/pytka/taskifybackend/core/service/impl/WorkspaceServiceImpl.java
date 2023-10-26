@@ -2,6 +2,7 @@ package com.pytka.taskifybackend.core.service.impl;
 
 import com.pytka.taskifybackend.core.DTO.WorkspaceDTO;
 import com.pytka.taskifybackend.core.DTO.WorkspaceLiteDTO;
+import com.pytka.taskifybackend.core.repository.TaskRepository;
 import com.pytka.taskifybackend.core.service.StatsService;
 import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeDeletedException;
 import com.pytka.taskifybackend.exceptions.core.DataCouldNotBeSavedException;
@@ -37,6 +38,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final StatsService statsService;
 
     private final UserStatsSender userStatsSender;
+
+    private final TaskRepository taskRepository;
 
     @Override
     public List<WorkspaceDTO> getWorkspacesByUserID(Long userID) {
@@ -128,6 +131,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         Long userID = workspaceEntity.getUserID();
 
+        Long taskCount = taskRepository.getTaskCountPerWorkspace(workspaceID);
+
         try{
             this.workspaceRepository.delete(workspaceEntity);
         }
@@ -135,7 +140,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new DataCouldNotBeDeletedException(WorkspaceEntity.class, workspaceID);
         }
 
-        this.statsService.incrementDeletedWorkspaceNumber(userID);
+        this.statsService.incrementDeletedWorkspaceNumber(userID, 1L);
+        this.statsService.incrementDeletedTaskNumber(userID, taskCount);
 
         this.userStatsSender.sendUserStats(userID);
     }

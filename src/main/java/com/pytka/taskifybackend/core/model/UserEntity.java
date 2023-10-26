@@ -63,6 +63,10 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         return email;
     }
 
+    public String getRealUsername(){
+        return username;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return !expired;

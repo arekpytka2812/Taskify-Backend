@@ -22,7 +22,7 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Override
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "${scheduling.app.notification.cron}")
     public void checkAndSendTaskExpirationNotification() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");

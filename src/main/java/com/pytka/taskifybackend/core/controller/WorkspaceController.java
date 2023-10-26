@@ -44,7 +44,7 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/update/{workspaceID}")
+    @PostMapping("/{workspaceID}")
     @RolesAllowed("USER")
     public ResponseEntity<Void> updateWorkspace(
             @PathVariable("workspaceID") Long workspaceID,
@@ -55,7 +55,7 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete/{workspaceID}")
+    @DeleteMapping("/{workspaceID}")
     @RolesAllowed("USER")
     public ResponseEntity<Void> deleteWorkspace(
             @PathVariable("workspaceID") Long workspaceID
