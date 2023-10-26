@@ -1,6 +1,6 @@
 package com.pytka.taskifybackend.email.TOs;
 
-import com.pytka.taskifybackend.core.DTOs.TaskDTO;
+import com.pytka.taskifybackend.core.DTO.TaskDTO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
